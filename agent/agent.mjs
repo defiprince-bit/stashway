@@ -1,36 +1,42 @@
-// Stashway agent brain (MVP): deterministic rules engine, no paid AI.
-// It turns a user/attacker message into a JSON action. The CONTRACT enforces safety.
-// Usage: node agent/agent.mjs "<message>"            -> prints action + near-cli command
-//        VAULT=x.testnet AGENT=y.testnet node agent/agent.mjs "<msg>" --send  -> actually calls testnet
-import { execSync } from "node:child_process";
-const msg = process.argv[2] || "save 0.5 NEAR to savings";
-const send = process.argv.includes("--send");
-const VAULT = process.env.VAULT || "stashway-demo.testnet";
-const AGENT = process.env.AGENT || VAULT;
+// Stashway agent (MVP brain = deterministic rules, no paid AI).
+// Flow: brain proposes -> Counterparty Guard decides -> only ALLOW+permit is submitted -> contract decides.
+// Usage: VAULT=.. AGENT_ID=ed25519:.. AGENT_KEY_FILE=.. node agent/agent.mjs "<message>" [--send] [--skip-guard]
+import { check, logEvent } from "../guard/guard.mjs";
+import { callTx, yocto } from "../lib/near.mjs";
 
-function brain(text) {
+export function brain(text) {
   const t = text.toLowerCase();
   const amt = (t.match(/(\d+(?:\.\d+)?)\s*near/) || [])[1];
   const to = (t.match(/to\s+([a-z0-9_.-]+\.(?:testnet|near))/) || [])[1];
-  // Naive on purpose: an injected instruction is obeyed, like a real jailbroken LLM would.
-  if (/send everything|all funds|drain/.test(t))
-    return { method: "agent_transfer", receiver: to || "evil.testnet", amount: "100 NEAR", note: "INJECTED" };
-  return { method: "agent_transfer", receiver: to || `savings.${VAULT}`.replace(/^savings\.(.*)$/, "savings-$1"), amount: `${amt || "0.5"} NEAR` };
+  // Naive on purpose: an injected instruction is obeyed, like a jailbroken LLM would.
+  if (/send everything|all funds|drain/.test(t)) return { receiver: to || "evil.testnet", near: "100", injected: true };
+  return { receiver: to, near: amt || "0.1" };
 }
-const a = brain(msg);
-console.log("agent action:", JSON.stringify(a));
-const args = JSON.stringify({ receiver: a.receiver, amount: toYocto(a.amount) });
-const cmd = `near contract call-function as-transaction ${VAULT} agent_transfer json-args '${args}' prepaid-gas '30 Tgas' attached-deposit '0 NEAR' sign-as ${AGENT} network-config testnet ${process.env.AGENT_KEY_FILE ? "sign-with-access-key-file " + process.env.AGENT_KEY_FILE : "sign-with-legacy-keychain"} send`;
-console.log(cmd);
-if (send) {
-  // Sign locally, broadcast via RPC so we always get a tx hash (even for rejected txs).
-  const out = execSync(cmd.replace(/ send$/, " display") + " 2>&1").toString();
-  const b64 = out.split("serialized as base64")[1].split("\n")[1].replace(/[\s│]/g, "");
-  const r = await (await fetch("https://rpc.testnet.near.org", { method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "broadcast_tx_commit", params: [b64] }) })).json();
-  if (r.error) { console.log("RPC error:", JSON.stringify(r.error)); process.exit(1); }
-  const h = r.result.transaction.hash, st = r.result.status;
-  console.log(st.Failure ? ">>> CONTRACT REJECTED: " + JSON.stringify(st.Failure) : ">>> ALLOWED");
-  console.log("https://testnet.nearblocks.io/txns/" + h);
+
+/** Run one intent end-to-end. Returns a security event. Never invents hashes. */
+export async function runIntent({ vault, agentId, keyFile, receiver, near, skipGuard = false, send = true, label = "" }) {
+  const intent = { vault, agent: agentId, receiver, amount: yocto(near) };
+  const ev = { label, vault, receiver, near };
+  let permit = null;
+  if (!skipGuard) {
+    const g = await check(intent);
+    Object.assign(ev, { decision: g.decision, reasons: g.reasons, evidence: g.evidence });
+    if (g.decision === "BLOCK") { ev.result = "OFFCHAIN_REFUSAL"; logEvent(ev); return ev; }
+    if (g.decision === "WARN") { ev.result = "WAITING_OWNER_CONFIRM"; ev.pending = { ...intent, nonce: String(Date.now() * 1000), expiry: String((Date.now() + 30 * 60e3) * 1e6) }; logEvent(ev); return ev; }
+    permit = g.permit;
+  } else { ev.decision = "SKIPPED (jailbroken agent bypasses Guard)"; }
+  ev.permit = permit ? "signed" : "none";
+  if (!send) { ev.result = "DRY_RUN"; return ev; }
+  const nonce = permit?.nonce || String(Date.now() * 1000), expiry = permit?.expiry || String((Date.now() + 6e5) * 1e6);
+  const r = await callTx(vault, "agent_transfer", { receiver, amount: yocto(near), nonce, expiry, permit_sig: permit?.sig ?? null }, { id: vault, keyFile });
+  Object.assign(ev, { result: r.kind, error: r.error, tx: r.hash, url: r.url, _permit: permit });
+  logEvent({ ...ev, _permit: undefined });
+  return ev;
 }
-function toYocto(s) { const [i, f = ""] = s.split(" ")[0].split("."); return BigInt(i + (f + "0".repeat(24)).slice(0, 24)).toString(); }
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const a = brain(process.argv[2] || "save 0.1 NEAR");
+  const ev = await runIntent({ vault: process.env.VAULT, agentId: process.env.AGENT_ID, keyFile: process.env.AGENT_KEY_FILE,
+    receiver: a.receiver || process.env.SAVINGS, near: a.near, skipGuard: process.argv.includes("--skip-guard"), send: process.argv.includes("--send") });
+  delete ev._permit; console.log(JSON.stringify(ev, null, 2));
+}

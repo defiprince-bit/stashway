@@ -3,3 +3,7 @@ node_modules/
 .env
 *.json.key
 neardev/
+guard/.guard-key.json
+guard/events.jsonl
+guard/code-hashes.json
+.env.testnet

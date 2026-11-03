@@ -1,0 +1,39 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Stashway — Attack Arena (testnet)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{margin:0;font:15px/1.45 system-ui,sans-serif;background:#0b1220;color:#e6edf6}
+header{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid #1e2a40}
+header img{width:36px;height:36px;border-radius:8px}nav{margin-left:auto;display:flex;gap:4px}
+nav a{color:#9fb0c8;text-decoration:none;padding:6px 12px;border-radius:8px;cursor:pointer}nav a.on{background:#16243b;color:#7ef0c1}
+main{max-width:980px;margin:0 auto;padding:24px}section{display:none}section.on{display:block}
+.card{background:#111a2c;border:1px solid #1e2a40;border-radius:12px;padding:16px;margin:12px 0}
+.b{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:600;font-size:12px}
+.ALLOW,.ONCHAIN_OK{background:#0f3d2e;color:#7ef0c1}.WARN,.WAITING_OWNER_CONFIRM{background:#3d340f;color:#f5d06b}
+.BLOCK,.ONCHAIN_REJECT,.OFFCHAIN_REFUSAL{background:#3d0f17;color:#ff8a9a}.x{background:#1e2a40;color:#9fb0c8}
+a{color:#7ef0c1}code{color:#b9c7dc}small{color:#7d8ba3}.pill{font-size:12px;color:#7d8ba3}
+</style></head><body>
+<header><img src="logo.jpg" alt="Stashway"><b>Stashway</b><span class="pill">testnet · the AI suggests, the Guard checks, the contract decides</span>
+<nav id="nav"></nav></header><main>
+<section id="Vault"></section><section id="Policy"></section><section id="Guard"></section>
+<section id="Arena"></section><section id="Events"></section><section id="Panic"></section></main>
+<script>
+const TABS=["Vault","Policy","Guard","Arena","Events","Panic"],RPC="https://rpc.testnet.near.org",NB="https://testnet.nearblocks.io";
+const $=id=>document.getElementById(id),near=y=>(Number(BigInt(y)/10n**20n)/1e4).toString()+" NEAR";
+nav.innerHTML=TABS.map(t=>`<a data-t="${t}">${t}</a>`).join("");
+const show=t=>{TABS.forEach(x=>{$(x).classList.toggle("on",x==t);nav.querySelector(`[data-t=${x}]`).classList.toggle("on",x==t)});location.hash=t};
+nav.onclick=e=>e.target.dataset.t&&show(e.target.dataset.t);
+const rpc=async(m,p)=>(await (await fetch(RPC,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:m,params:p})})).json()).result;
+const view=async(c,m)=>{const r=await rpc("query",{request_type:"call_function",finality:"final",account_id:c,method_name:m,args_base64:btoa("{}")});return JSON.parse(new TextDecoder().decode(new Uint8Array(r.result)))};
+const badge=s=>`<span class="b ${s&&s.split(" ")[0]}">${s||"—"}</span>`,link=s=>s.url?`<a href="${s.url}" target=_blank>${s.tx.slice(0,10)}… ↗</a>`:"<small>no tx (by design)</small>";
+(async()=>{
+ const d=await (await fetch("results.json")).json(),V=d.vault;
+ const [pol,allow,acct]=await Promise.all([view(V,"get_policy"),view(V,"get_allowlist"),rpc("query",{request_type:"view_account",finality:"final",account_id:V})]).catch(()=>[null,[],null]);
+ $("Vault").innerHTML=`<div class=card><h2>Vault</h2><p><a href="${NB}/address/${V}" target=_blank>${V}</a></p><p>Balance: <b>${acct?near(acct.amount):"?"}</b> · Owner: <code>${d.owner}</code></p><p>Agent key (function-call, only <code>agent_transfer</code>): <code>${d.agent_key}</code></p></div>`;
+ $("Policy").innerHTML=`<div class=card><h2>Policy (read live from contract)</h2>${pol?`<p>per_tx_cap <b>${near(pol[0])}</b> · daily_cap <b>${near(pol[1])}</b> · frozen <b>${pol[2]}</b></p>`:"<p>RPC unavailable</p>"}<p>Allowlist: ${allow.map(a=>`<code>${a}</code>`).join(", ")}</p><small>Only the owner can change these. The agent key cannot call any owner method.</small></div>`;
+ $("Guard").innerHTML=`<div class=card><h2>Counterparty Guard</h2><p>Deterministic signals → ${badge("ALLOW")} ${badge("WARN")} ${badge("BLOCK")}. No AI authorizes anything.</p><ul><li>Shared blocklist</li><li>Receiver on vault allowlist / amount within cap / vault not frozen</li><li>Account exists, is_contract, code_hash (RPC) · Trust Drift: code_hash change → WARN</li><li>Account age (nearblocks, soft-fail) · prior relationship (event log)</li></ul><p>ALLOW → Guard signs an ed25519 permit over <code>vault|agent|receiver|amount|nonce|expiry</code>. The contract verifies it with <code>env::ed25519_verify</code> and burns the nonce. WARN → owner must <code>owner_confirm</code> the exact intent.</p></div>`;
+ $("Arena").innerHTML=`<p><small>Recorded ${d.generated} on ${d.network}. Re-run: <code>node arena/run.mjs</code></small></p>`+d.results.map(r=>`<div class=card><h3>${r.id}. ${r.title}</h3><small>Attack: ${r.attack}</small>${r.steps.map(s=>`<p>${s.label}<br>Guard ${badge(s.decision)} · permit <code>${s.permit||"—"}</code> · ${badge(s.result)} ${s.error?`<code>${s.error}</code>`:""} · ${link(s)}${s.reasons?`<br><small>${s.reasons.join(" · ")}</small>`:""}</p>`).join("")}</div>`).join("");
+ $("Events").innerHTML=`<div class=card><h2>Security event log</h2>`+d.events.slice().reverse().map(e=>`<p><small>${e.ts}</small> ${badge(e.decision)} ${badge(e.result)} → <code>${e.receiver}</code> ${e.error?`<code>${e.error}</code>`:""} ${link(e)}</p>`).join("")+`</div>`;
+ $("Panic").innerHTML=`<div class=card><h2>Panic</h2><p>Owner calls <code>panic()</code>: vault freezes all agent actions and deletes the agent access key in the same call.</p><pre>near contract call-function as-transaction ${V} panic json-args {} prepaid-gas '30 Tgas' attached-deposit '0 NEAR' sign-as ${d.owner} network-config testnet sign-with-legacy-keychain send</pre><small>Wallet-signed button: TODO (Thu).</small></div>`;
+ show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"Arena");
+})();
+</script></body></html>
