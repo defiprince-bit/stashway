@@ -20,7 +20,17 @@ function brain(text) {
 const a = brain(msg);
 console.log("agent action:", JSON.stringify(a));
 const args = JSON.stringify({ receiver: a.receiver, amount: toYocto(a.amount) });
-const cmd = `near contract call-function as-transaction ${VAULT} agent_transfer json-args '${args}' prepaid-gas '30 Tgas' attached-deposit '0 NEAR' sign-as ${AGENT} network-config testnet sign-with-keychain send`;
+const cmd = `near contract call-function as-transaction ${VAULT} agent_transfer json-args '${args}' prepaid-gas '30 Tgas' attached-deposit '0 NEAR' sign-as ${AGENT} network-config testnet ${process.env.AGENT_KEY_FILE ? "sign-with-access-key-file " + process.env.AGENT_KEY_FILE : "sign-with-legacy-keychain"} send`;
 console.log(cmd);
-if (send) { try { execSync(cmd, { stdio: "inherit" }); } catch { console.log("\n>>> CONTRACT REJECTED the action (expected for red-team). Check the tx on testnet.nearblocks.io"); } }
+if (send) {
+  // Sign locally, broadcast via RPC so we always get a tx hash (even for rejected txs).
+  const out = execSync(cmd.replace(/ send$/, " display") + " 2>&1").toString();
+  const b64 = out.split("serialized as base64")[1].split("\n")[1].replace(/[\s│]/g, "");
+  const r = await (await fetch("https://rpc.testnet.near.org", { method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "broadcast_tx_commit", params: [b64] }) })).json();
+  if (r.error) { console.log("RPC error:", JSON.stringify(r.error)); process.exit(1); }
+  const h = r.result.transaction.hash, st = r.result.status;
+  console.log(st.Failure ? ">>> CONTRACT REJECTED: " + JSON.stringify(st.Failure) : ">>> ALLOWED");
+  console.log("https://testnet.nearblocks.io/txns/" + h);
+}
 function toYocto(s) { const [i, f = ""] = s.split(" ")[0].split("."); return BigInt(i + (f + "0".repeat(24)).slice(0, 24)).toString(); }
