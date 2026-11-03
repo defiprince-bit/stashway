@@ -1,39 +1,89 @@
 <!doctype html><html><head><meta charset="utf-8"><title>Stashway — Attack Arena (testnet)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body{margin:0;font:15px/1.45 system-ui,sans-serif;background:#0b1220;color:#e6edf6}
-header{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid #1e2a40}
-header img{width:36px;height:36px;border-radius:8px}nav{margin-left:auto;display:flex;gap:4px}
-nav a{color:#9fb0c8;text-decoration:none;padding:6px 12px;border-radius:8px;cursor:pointer}nav a.on{background:#16243b;color:#7ef0c1}
-main{max-width:980px;margin:0 auto;padding:24px}section{display:none}section.on{display:block}
-.card{background:#111a2c;border:1px solid #1e2a40;border-radius:12px;padding:16px;margin:12px 0}
-.b{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:600;font-size:12px}
-.ALLOW,.ONCHAIN_OK{background:#0f3d2e;color:#7ef0c1}.WARN,.WAITING_OWNER_CONFIRM{background:#3d340f;color:#f5d06b}
-.BLOCK,.ONCHAIN_REJECT,.OFFCHAIN_REFUSAL{background:#3d0f17;color:#ff8a9a}.x{background:#1e2a40;color:#9fb0c8}
-a{color:#7ef0c1}code{color:#b9c7dc}small{color:#7d8ba3}.pill{font-size:12px;color:#7d8ba3}
+:root{--bg:#070b16;--glass:rgba(22,32,56,.55);--line:rgba(126,240,193,.14);--mint:#7ef0c1;--amber:#f5d06b;--red:#ff6b81;--mut:#8a98b3;--txt:#e9f0fa}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 Inter,system-ui,sans-serif;color:var(--txt);min-height:100vh;
+background:radial-gradient(900px 500px at 10% -10%,rgba(126,240,193,.13),transparent 60%),radial-gradient(800px 500px at 100% 0,rgba(120,110,255,.14),transparent 60%),var(--bg)}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 24px;backdrop-filter:blur(14px);background:rgba(7,11,22,.7);border-bottom:1px solid var(--line)}
+header img{width:38px;height:38px;border-radius:10px;box-shadow:0 0 18px rgba(126,240,193,.35)}header b{font-size:18px;letter-spacing:.3px}
+nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}nav a{color:var(--mut);padding:6px 12px;border-radius:999px;cursor:pointer;text-decoration:none}
+nav a.on{color:var(--bg);background:var(--mint);box-shadow:0 0 16px rgba(126,240,193,.5)}nav a[data-t=Panic]{color:var(--red)}nav a[data-t=Panic].on{background:var(--red);color:#fff;box-shadow:0 0 16px rgba(255,107,129,.6)}
+main{max-width:1020px;margin:0 auto;padding:24px}section{display:none}section.on{display:block;animation:f .25s}@keyframes f{from{opacity:0;transform:translateY(6px)}}
+.card{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:14px 0;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+h2,h3{margin:.1em 0 .4em}h3 .n{color:var(--mint);margin-right:6px}
+.b{display:inline-block;padding:2px 9px;border-radius:999px;font:600 11.5px/1.6 ui-monospace,monospace;letter-spacing:.3px;border:1px solid}
+.ALLOW,.ONCHAIN_OK,.OWNER{color:var(--mint);border-color:rgba(126,240,193,.5);background:rgba(126,240,193,.08);box-shadow:0 0 10px rgba(126,240,193,.2)}
+.WARN,.WAITING_OWNER_CONFIRM{color:var(--amber);border-color:rgba(245,208,107,.5);background:rgba(245,208,107,.08)}
+.BLOCK,.ONCHAIN_REJECT,.OFFCHAIN_REFUSAL,.KEY_REVOKED{color:var(--red);border-color:rgba(255,107,129,.5);background:rgba(255,107,129,.08);box-shadow:0 0 10px rgba(255,107,129,.2)}
+.x,.SKIPPED{color:var(--mut);border-color:#2a3654}.pm{font:12px ui-monospace,monospace;color:#b9c7dc;background:#0d1426;border:1px solid #22304e;border-radius:6px;padding:1px 7px}
+.step{display:grid;grid-template-columns:18px 1fr;gap:10px;padding:8px 0;border-top:1px dashed #1f2b47}.step:first-of-type{border-top:0}
+.dot{width:12px;height:12px;border-radius:50%;margin-top:5px;background:var(--mut)}.dot.ok{background:var(--mint);box-shadow:0 0 10px var(--mint)}.dot.bad{background:var(--red);box-shadow:0 0 10px var(--red)}.dot.warn{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px}
+a{color:var(--mint)}code{color:#b9c7dc;font-size:13px}small,.mut{color:var(--mut)}.pill{font-size:12px;color:var(--mut)}
+.ev{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:8px 0}.ev div{background:#0d1426;border:1px solid #1f2b47;border-radius:10px;padding:8px}.ev b{display:block;font:13px ui-monospace,monospace;word-break:break-all}
+pre{white-space:pre-wrap;word-break:break-all;background:#050912;border:1px solid #1f2b47;border-radius:10px;padding:12px;font-size:12.5px;color:#cfe;margin:8px 0}
+button{font:600 14px Inter,system-ui;border-radius:10px;border:1px solid var(--line);background:#0f1a30;color:var(--txt);padding:8px 14px;cursor:pointer}button:hover{border-color:var(--mint)}
+.cta{background:var(--mint);color:var(--bg);border:0}label{display:block;font-size:12px;color:var(--mut);margin-top:8px}
+input{width:100%;background:#050912;border:1px solid #22304e;color:var(--txt);border-radius:8px;padding:7px 9px;font:13px ui-monospace,monospace}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+#hold{position:relative;overflow:hidden;width:100%;padding:22px;font-size:18px;letter-spacing:2px;background:rgba(255,107,129,.12);color:var(--red);border:1px solid var(--red);border-radius:14px;user-select:none}
+#hold i{position:absolute;inset:0;width:0;background:rgba(255,107,129,.35);transition:none}#hold span{position:relative}
+.warnbox{border-color:rgba(245,208,107,.45);box-shadow:0 0 24px rgba(245,208,107,.12)}.panicbox{border-color:rgba(255,107,129,.45);box-shadow:0 0 24px rgba(255,107,129,.12)}
+details summary{cursor:pointer;color:var(--mut);font-size:12px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--mint);color:var(--bg);padding:8px 16px;border-radius:999px;font-weight:600;display:none}
 </style></head><body>
-<header><img src="logo.jpg" alt="Stashway"><b>Stashway</b><span class="pill">testnet · the AI suggests, the Guard checks, the contract decides</span>
-<nav id="nav"></nav></header><main>
-<section id="Vault"></section><section id="Policy"></section><section id="Guard"></section>
-<section id="Arena"></section><section id="Events"></section><section id="Panic"></section></main>
+<header><img src="logo.jpg" alt="Stashway"><b>Stashway</b><span class="pill">testnet · the AI suggests, the Guard checks, the contract decides</span><nav id="nav"></nav></header>
+<main><section id="Vault"></section><section id="Policy"></section><section id="Guard"></section><section id="Arena"></section><section id="Events"></section><section id="Panic"></section></main>
+<div class="toast" id="toast">Copied</div>
 <script>
 const TABS=["Vault","Policy","Guard","Arena","Events","Panic"],RPC="https://rpc.testnet.near.org",NB="https://testnet.nearblocks.io";
-const $=id=>document.getElementById(id),near=y=>(Number(BigInt(y)/10n**20n)/1e4).toString()+" NEAR";
+const $=id=>document.getElementById(id),near=y=>(Number(BigInt(y)/10n**20n)/1e4).toString()+" NEAR",esc=s=>String(s??"").replace(/[<>&"]/g,c=>`&#${c.charCodeAt(0)};`);
 nav.innerHTML=TABS.map(t=>`<a data-t="${t}">${t}</a>`).join("");
-const show=t=>{TABS.forEach(x=>{$(x).classList.toggle("on",x==t);nav.querySelector(`[data-t=${x}]`).classList.toggle("on",x==t)});location.hash=t};
+const show=t=>{TABS.forEach(x=>{$(x).classList.toggle("on",x==t);nav.querySelector(`[data-t=${x}]`).classList.toggle("on",x==t)});history.replaceState(0,"","#"+t)};
 nav.onclick=e=>e.target.dataset.t&&show(e.target.dataset.t);
+const toast=m=>{const t=$("toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",1400)};
+const copy=id=>navigator.clipboard.writeText($(id).textContent).then(()=>toast("Copied — paste in terminal"),()=>toast("Select & copy manually"));
 const rpc=async(m,p)=>(await (await fetch(RPC,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:m,params:p})})).json()).result;
 const view=async(c,m)=>{const r=await rpc("query",{request_type:"call_function",finality:"final",account_id:c,method_name:m,args_base64:btoa("{}")});return JSON.parse(new TextDecoder().decode(new Uint8Array(r.result)))};
-const badge=s=>`<span class="b ${s&&s.split(" ")[0]}">${s||"—"}</span>`,link=s=>s.url?`<a href="${s.url}" target=_blank>${s.tx.slice(0,10)}… ↗</a>`:"<small>no tx (by design)</small>";
+const cls=s=>s?(s.startsWith("SKIPPED")?"SKIPPED":s.split(" ")[0]):"x";
+const chip=s=>s?`<span class="b ${cls(s)}">${esc(s)}</span>`:"";
+const link=s=>s.url?`<a href="${s.url}" target=_blank>${s.tx.slice(0,10)}… on nearblocks ↗</a>`:`<small>no tx (by design)</small>`;
+const dot=s=>/REJECT|REFUSAL|REVOKED|ERROR/.test(s.result)?"bad":/WAIT/.test(s.result)?"warn":/OK/.test(s.result)?"ok":"";
+const evid=e=>e?`<div class=ev>${Object.entries(e).map(([k,v])=>`<div><small>${k}</small><b>${esc(v)}</b></div>`).join("")}</div>`:"";
+const call=(V,who,m,a)=>`near contract call-function as-transaction ${V} ${m} json-args '${JSON.stringify(a)}' prepaid-gas '30 Tgas' attached-deposit '0 NEAR' sign-as ${who} network-config testnet sign-with-legacy-keychain send`;
 (async()=>{
- const d=await (await fetch("results.json")).json(),V=d.vault;
+ const d=await (await fetch("results.json")).json(),V=d.vault,O=d.owner;
  const [pol,allow,acct]=await Promise.all([view(V,"get_policy"),view(V,"get_allowlist"),rpc("query",{request_type:"view_account",finality:"final",account_id:V})]).catch(()=>[null,[],null]);
- $("Vault").innerHTML=`<div class=card><h2>Vault</h2><p><a href="${NB}/address/${V}" target=_blank>${V}</a></p><p>Balance: <b>${acct?near(acct.amount):"?"}</b> · Owner: <code>${d.owner}</code></p><p>Agent key (function-call, only <code>agent_transfer</code>): <code>${d.agent_key}</code></p></div>`;
- $("Policy").innerHTML=`<div class=card><h2>Policy (read live from contract)</h2>${pol?`<p>per_tx_cap <b>${near(pol[0])}</b> · daily_cap <b>${near(pol[1])}</b> · frozen <b>${pol[2]}</b></p>`:"<p>RPC unavailable</p>"}<p>Allowlist: ${allow.map(a=>`<code>${a}</code>`).join(", ")}</p><small>Only the owner can change these. The agent key cannot call any owner method.</small></div>`;
- $("Guard").innerHTML=`<div class=card><h2>Counterparty Guard</h2><p>Deterministic signals → ${badge("ALLOW")} ${badge("WARN")} ${badge("BLOCK")}. No AI authorizes anything.</p><ul><li>Shared blocklist</li><li>Receiver on vault allowlist / amount within cap / vault not frozen</li><li>Account exists, is_contract, code_hash (RPC) · Trust Drift: code_hash change → WARN</li><li>Account age (nearblocks, soft-fail) · prior relationship (event log)</li></ul><p>ALLOW → Guard signs an ed25519 permit over <code>vault|agent|receiver|amount|nonce|expiry</code>. The contract verifies it with <code>env::ed25519_verify</code> and burns the nonce. WARN → owner must <code>owner_confirm</code> the exact intent.</p></div>`;
- $("Arena").innerHTML=`<p><small>Recorded ${d.generated} on ${d.network}. Re-run: <code>node arena/run.mjs</code></small></p>`+d.results.map(r=>`<div class=card><h3>${r.id}. ${r.title}</h3><small>Attack: ${r.attack}</small>${r.steps.map(s=>`<p>${s.label}<br>Guard ${badge(s.decision)} · permit <code>${s.permit||"—"}</code> · ${badge(s.result)} ${s.error?`<code>${s.error}</code>`:""} · ${link(s)}${s.reasons?`<br><small>${s.reasons.join(" · ")}</small>`:""}</p>`).join("")}</div>`).join("");
- $("Events").innerHTML=`<div class=card><h2>Security event log</h2>`+d.events.slice().reverse().map(e=>`<p><small>${e.ts}</small> ${badge(e.decision)} ${badge(e.result)} → <code>${e.receiver}</code> ${e.error?`<code>${e.error}</code>`:""} ${link(e)}</p>`).join("")+`</div>`;
- $("Panic").innerHTML=`<div class=card><h2>Panic</h2><p>Owner calls <code>panic()</code>: vault freezes all agent actions and deletes the agent access key in the same call.</p><pre>near contract call-function as-transaction ${V} panic json-args {} prepaid-gas '30 Tgas' attached-deposit '0 NEAR' sign-as ${d.owner} network-config testnet sign-with-legacy-keychain send</pre><small>Wallet-signed button: TODO (Thu).</small></div>`;
+ $("Vault").innerHTML=`<div class=card><h2>Vault</h2><p><a href="${NB}/address/${V}" target=_blank>${V} ↗</a></p><div class=ev><div><small>balance (live)</small><b>${acct?near(acct.amount):"offline"}</b></div><div><small>owner</small><b>${O}</b></div><div><small>agent key · agent_transfer only</small><b>${d.agent_key}</b></div><div><small>status</small><b>${pol?(pol[2]?"🔴 FROZEN":"🟢 active"):"?"}</b></div></div></div>`;
+ $("Policy").innerHTML=`<div class=card><h2>Policy <small>read live from contract</small></h2>${pol?`<div class=ev><div><small>per_tx_cap</small><b>${near(pol[0])}</b></div><div><small>daily_cap</small><b>${near(pol[1])}</b></div><div><small>frozen</small><b>${pol[2]}</b></div></div>`:"<p class=mut>RPC unavailable — showing recorded data only</p>"}<p>Allowlist: ${allow.map(a=>`<span class=pm>${a}</span>`).join(" ")}</p><small>Only the owner can change these. The agent key cannot call any owner method.</small></div>`;
+ // Guard: latest WARN pending → owner confirm panel
+ const all=d.results.flatMap(r=>r.steps),pend=[...all].reverse().find(s=>s.pending),lastG=[...all].reverse().find(s=>s.evidence);
+ const P=pend?.pending||{vault:V,agent:d.agent_key,receiver:"",amount:"100000000000000000000000",nonce:String(Date.now()*1000),expiry:String((Date.now()+18e5)*1e6)};
+ $("Guard").innerHTML=`<div class=card><h2>Counterparty Guard</h2><p>Deterministic signals → ${chip("ALLOW")} ${chip("WARN")} ${chip("BLOCK")} · <b>No AI authorizes anything.</b></p><small>blocklist · allowlist / caps / frozen · RPC account + code_hash · Trust Drift · account age · prior relationship</small>
+ <p>ALLOW → Guard signs an ed25519 permit over <span class=pm>vault|agent|receiver|amount|nonce|expiry</span>; the contract verifies with <code>env::ed25519_verify</code> and burns the nonce.</p></div>
+ ${lastG?`<div class=card><h3>Latest decision ${chip(lastG.decision)}</h3><p>${esc(lastG.label)} → <span class=pm>${lastG.receiver}</span> · ${lastG.near} NEAR</p><ul>${(lastG.reasons||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ul>${evid(lastG.evidence)}<div class=row>permit <span class=pm>${lastG.permit||"—"}</span> ${chip(lastG.result)} ${lastG.error?`<code>${lastG.error}</code>`:""} ${link(lastG)}</div></div>`:""}
+ <div class="card warnbox"><h3>${chip("WARN")} Owner confirm</h3><p class=mut>${pend?`Pending from Arena: <b>${esc(pend.label)}</b>. Reasons: ${(pend.reasons||[]).map(esc).join(" · ")}`:"No pending WARN — fill an intent manually."}</p>
+ <div class=grid2>${["receiver","amount","nonce","expiry","agent"].map(k=>`<div><label>${k}${k=="amount"?" (yocto)":k=="expiry"?" (ns)":""}</label><input id="oc_${k}" value="${esc(P[k])}"></div>`).join("")}<div><label>amount ≈</label><input id="oc_h" disabled></div></div>
+ <pre id="occmd"></pre><div class=row><button class=cta onclick="copy('occmd')">Confirm — copy owner_confirm</button><button onclick="this.closest('.card').style.opacity=.4">Dismiss</button><small>Owner signs; agent then submits the same intent with <code>permit_sig: null</code>.</small></div></div>`;
+ const oc=()=>{const g=k=>$("oc_"+k).value.trim();try{$("oc_h").value=near(g("amount"))}catch{}$("occmd").textContent=call(V,O,"owner_confirm",{agent:g("agent"),receiver:g("receiver"),amount:g("amount"),nonce:g("nonce"),expiry:g("expiry")})};
+ document.querySelectorAll("[id^=oc_]").forEach(i=>i.oninput=oc);oc();
+ // Arena
+ $("Arena").innerHTML=`<p><small>Recorded ${d.generated}${d.panic_generated?` · panic ${d.panic_generated}`:""} on ${d.network}. Re-run 1–5: <code>node arena/run.mjs</code> · panic (film last): <code>scripts/panic-demo.sh</code></small></p>`+d.results.map(r=>`<div class="card ${r.id==6?"panicbox":""}"><h3><span class=n>${r.id}</span>${esc(r.title)}</h3><small>Attack: ${esc(r.attack)}</small>${r.steps.map(s=>`<div class=step><span class="dot ${dot(s)}"></span><div>${esc(s.label)}<div class=row>${s.decision?`Guard ${chip(s.decision)}`:""} ${s.permit?`permit <span class=pm>${esc(s.permit)}</span>`:""} → ${chip(s.result)} ${s.error?`<code>${esc(s.error)}</code>`:""} · ${link(s)}</div>${s.reasons?`<small>${s.reasons.map(esc).join(" · ")}</small>`:""}</div></div>`).join("")}</div>`).join("");
+ $("Events").innerHTML=`<div class=card><h2>Security event log</h2>`+d.events.slice().reverse().map(e=>`<div class=step><span class="dot ${dot(e)}"></span><div><small>${e.ts||""}</small> ${esc(e.label)}<div class=row>${chip(e.decision)} ${chip(e.result)} → <span class=pm>${e.receiver||"—"}</span>${e.near?` ${e.near} NEAR`:""} ${e.error?`<code>${esc(e.error)}</code>`:""} ${link(e)}</div>${e.reasons||e.evidence?`<details><summary>details</summary><small>${(e.reasons||[]).map(esc).join(" · ")}</small>${evid(e.evidence)}${e.permit?`permit <span class=pm>${e.permit}</span>`:""}</details>`:""}</div></div>`).join("")+`</div>`;
+ // Panic
+ const p6=d.results.find(r=>r.id==6);
+ $("Panic").innerHTML=`<div class="card panicbox"><h2>Panic</h2><p>Owner calls <code>panic()</code>: freezes every agent action <b>and deletes the agent access key</b> in the same transaction.</p>
+ <button id="hold"><i></i><span>HOLD 1.5s TO PANIC</span></button><div id="pout" style="display:none"><pre id="pcmd">${call(V,O,"panic",{})}</pre><div class=row><button class=cta onclick="copy('pcmd')">Copy panic command</button><small>Signed by the owner key in your terminal. This page never holds keys.</small></div></div></div>
+ ${p6?`<div class=card><h3>Last recorded panic</h3>${p6.steps.map(s=>`<div class=step><span class="dot ${dot(s)}"></span><div>${esc(s.label)}<div class=row>${chip(s.result)} ${s.error?`<code>${esc(s.error)}</code>`:""} · ${link(s)}</div></div></div>`).join("")}</div>`:""}
+ <div class=card><h3>Recovery</h3><p class=mut>Panic is reversible by the owner: add a fresh function-call key (agent_transfer only), then <code>set_agent</code> (which also unfreezes). <code>scripts/panic-demo.sh</code> does all of this automatically.</p>
+ <pre id="rcmd">near account add-key ${V} grant-function-call-access --allowance '0.25 NEAR' --contract-account-id ${V} --function-names agent_transfer autogenerate-new-keypair save-to-legacy-keychain network-config testnet sign-with-legacy-keychain send
+${call(V,O,"set_agent",{agent:null,agent_key:"ed25519:NEW_PK"})}
+# freeze-only (key kept):
+${call(V,O,"unfreeze",{})}</pre><button onclick="copy('rcmd')">Copy recovery</button></div>`;
+ const h=$("hold"),bar=h.querySelector("i");let t0,raf;
+ const tick=()=>{const p=Math.min(1,(performance.now()-t0)/1500);bar.style.width=p*100+"%";if(p<1)raf=requestAnimationFrame(tick);else{h.querySelector("span").textContent="PANIC ARMED — RUN THE COMMAND";$("pout").style.display="block";copy("pcmd")}};
+ const stop=()=>{cancelAnimationFrame(raf);if(!$("pout").style.display||$("pout").style.display=="none")bar.style.width=0};
+ h.onpointerdown=()=>{t0=performance.now();tick()};h.onpointerup=h.onpointerleave=stop;
  show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"Arena");
 })();
 </script></body></html>

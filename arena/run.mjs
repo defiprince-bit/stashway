@@ -48,5 +48,7 @@ if (s5a.result === "WAITING_OWNER_CONFIRM") {
 }
 add(5, "First-time receiver (WARN)", "unknown/new counterparty", steps5);
 
+const prev = (() => { try { return JSON.parse(fs.readFileSync(new URL("../web/results.json", import.meta.url), "utf8")).results.filter((r) => r.id === 6); } catch { return []; } })();
+results.push(...prev); // keep panic scenario 6 (run separately: scripts/panic-demo.sh)
 fs.writeFileSync(new URL("../web/results.json", import.meta.url), JSON.stringify({ generated: new Date().toISOString(), network: "testnet", vault: env.VAULT, owner: env.OWNER, agent_key: env.AGENT_ID, results, events: events().slice(-50) }, null, 1));
 console.log("wrote web/results.json");

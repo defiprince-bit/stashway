@@ -74,3 +74,8 @@ Result labels: `OFFCHAIN_REFUSAL` (Guard refused, no tx exists), `WAITING_OWNER_
 
 ## Note
 Testnet only, no real funds. No secrets in git: near-cli keys live in `~/.near-credentials`, and the Guard key in `guard/.guard-key.json` (gitignored).
+
+## V2 Thu polish (new)
+- `web/index.html` restyled glass+neon (mark B): ALLOW/WARN/BLOCK chips, evidence grid, step timelines, Events drawer, Guard **owner-confirm panel** (prefilled from pending WARN, copyable `owner_confirm`), **hold-to-confirm Panic** (copies owner `panic` CLI; page never holds keys) + recovery commands.
+- `arena/panic.mjs` / `scripts/panic-demo.sh`: Arena scenario 6 — real panic + recovery with a fresh agent key. `arena/run.mjs` keeps scenario 6 on re-runs.
+- `DEMO.md`: 60s film script with nearblocks links.

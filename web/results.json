@@ -3,7 +3,7 @@
  "network": "testnet",
  "vault": "stashway-v2-8201.testnet",
  "owner": "stashway-owner-3238.testnet",
- "agent_key": "ed25519:7R7vT3rp9heNr9qgbLB9oAQzJkBpmQAZLxTYafCa3f5o",
+ "agent_key": "ed25519:2ac1ArFufpv1RdUYF4iJsQnh4Y9XqPDmiW4RwqJB9knA",
  "results": [
   {
    "id": 1,
@@ -147,6 +147,60 @@
      "url": "https://testnet.nearblocks.io/txns/Hw9AXZxyHcoKno5uc5FiXDQyP7nRGkmSGM8kXU6LNQ8u"
     }
    ]
+  },
+  {
+   "id": 6,
+   "title": "Panic button",
+   "attack": "owner kill-switch mid-incident",
+   "steps": [
+    {
+     "label": "owner presses PANIC: freeze + delete agent key",
+     "decision": "OWNER",
+     "result": "ONCHAIN_OK",
+     "tx": "CojZv9G7FLTmurfxzvDkEVBMwsJ6fSCdchknWcvrey51",
+     "url": "https://testnet.nearblocks.io/txns/CojZv9G7FLTmurfxzvDkEVBMwsJ6fSCdchknWcvrey51"
+    },
+    {
+     "label": "agent retries with its old key (deleted by panic)",
+     "result": "KEY_REVOKED",
+     "error": "does not exist"
+    },
+    {
+     "label": "any signer calls agent_transfer while frozen",
+     "result": "ONCHAIN_REJECT",
+     "error": "ERR_FROZEN",
+     "tx": "CfktaF8Tfniq46PMYzw3isMxowGwiZBmbgRNsvjtmPNL",
+     "url": "https://testnet.nearblocks.io/txns/CfktaF8Tfniq46PMYzw3isMxowGwiZBmbgRNsvjtmPNL"
+    },
+    {
+     "label": "owner re-registers a fresh agent key (set_agent → unfrozen)",
+     "decision": "OWNER",
+     "result": "ONCHAIN_OK",
+     "tx": "HNDPz6TwTSmqcHiJfBfKwm17NyPfva2JSueV6JqFrLoL",
+     "url": "https://testnet.nearblocks.io/txns/HNDPz6TwTSmqcHiJfBfKwm17NyPfva2JSueV6JqFrLoL"
+    },
+    {
+     "label": "new agent key saves 0.1 NEAR (vault usable again)",
+     "vault": "stashway-v2-8201.testnet",
+     "receiver": "stashway-owner-3238.testnet",
+     "near": "0.1",
+     "decision": "ALLOW",
+     "reasons": [
+      "all signals clean"
+     ],
+     "evidence": {
+      "allowlisted": true,
+      "is_contract": false,
+      "code_hash": "11111111111111111111111111111111",
+      "age_days": "unknown",
+      "prior_relationship": true
+     },
+     "permit": "signed",
+     "result": "ONCHAIN_OK",
+     "tx": "ByiXkAezgobKNs2CZu3gVny6oyjYCBzhmBw1aq2m55gP",
+     "url": "https://testnet.nearblocks.io/txns/ByiXkAezgobKNs2CZu3gVny6oyjYCBzhmBw1aq2m55gP"
+    }
+   ]
   }
  ],
  "events": [
@@ -262,6 +316,63 @@
    "result": "ONCHAIN_OK",
    "tx": "Hw9AXZxyHcoKno5uc5FiXDQyP7nRGkmSGM8kXU6LNQ8u",
    "url": "https://testnet.nearblocks.io/txns/Hw9AXZxyHcoKno5uc5FiXDQyP7nRGkmSGM8kXU6LNQ8u"
+  },
+  {
+   "ts": "2026-11-03T23:41:47.522Z",
+   "vault": "stashway-v2-8201.testnet",
+   "label": "owner presses PANIC: freeze + delete agent key",
+   "decision": "OWNER",
+   "result": "ONCHAIN_OK",
+   "tx": "CojZv9G7FLTmurfxzvDkEVBMwsJ6fSCdchknWcvrey51",
+   "url": "https://testnet.nearblocks.io/txns/CojZv9G7FLTmurfxzvDkEVBMwsJ6fSCdchknWcvrey51"
+  },
+  {
+   "ts": "2026-11-03T23:41:52.038Z",
+   "vault": "stashway-v2-8201.testnet",
+   "label": "agent retries with its old key (deleted by panic)",
+   "result": "KEY_REVOKED",
+   "error": "does not exist"
+  },
+  {
+   "ts": "2026-11-03T23:41:58.362Z",
+   "vault": "stashway-v2-8201.testnet",
+   "label": "any signer calls agent_transfer while frozen",
+   "result": "ONCHAIN_REJECT",
+   "error": "ERR_FROZEN",
+   "tx": "CfktaF8Tfniq46PMYzw3isMxowGwiZBmbgRNsvjtmPNL",
+   "url": "https://testnet.nearblocks.io/txns/CfktaF8Tfniq46PMYzw3isMxowGwiZBmbgRNsvjtmPNL"
+  },
+  {
+   "ts": "2026-11-03T23:42:07.952Z",
+   "vault": "stashway-v2-8201.testnet",
+   "label": "owner re-registers a fresh agent key (set_agent → unfrozen)",
+   "decision": "OWNER",
+   "result": "ONCHAIN_OK",
+   "tx": "HNDPz6TwTSmqcHiJfBfKwm17NyPfva2JSueV6JqFrLoL",
+   "url": "https://testnet.nearblocks.io/txns/HNDPz6TwTSmqcHiJfBfKwm17NyPfva2JSueV6JqFrLoL"
+  },
+  {
+   "ts": "2026-11-03T23:42:24.386Z",
+   "label": "new agent key saves 0.1 NEAR (vault usable again)",
+   "vault": "stashway-v2-8201.testnet",
+   "receiver": "stashway-owner-3238.testnet",
+   "near": "0.1",
+   "decision": "ALLOW",
+   "reasons": [
+    "all signals clean"
+   ],
+   "evidence": {
+    "allowlisted": true,
+    "is_contract": false,
+    "code_hash": "11111111111111111111111111111111",
+    "age_days": "unknown",
+    "prior_relationship": true
+   },
+   "permit": "signed",
+   "result": "ONCHAIN_OK",
+   "tx": "ByiXkAezgobKNs2CZu3gVny6oyjYCBzhmBw1aq2m55gP",
+   "url": "https://testnet.nearblocks.io/txns/ByiXkAezgobKNs2CZu3gVny6oyjYCBzhmBw1aq2m55gP"
   }
- ]
+ ],
+ "panic_generated": "2026-11-03T23:42:24.387Z"
 }
