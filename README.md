@@ -27,7 +27,7 @@ More ways to test with your own agent: [JUDGES.md](JUDGES.md). Demo script: [DEM
 **NEAR primitives:** function-call access keys (agent may only call `agent_transfer`) · `env::ed25519_verify` for Guard permits + nonce set against replay · `panic()` freezes the vault and `Promise::delete_key` removes the agent key.
 
 ## Live
-- **One link:** https://stashway-arena.vercel.app (landing → **Open app** opens the Start page in place, `/#start` → Arena / Try / Vault)
+- **One link:** https://stashway-arena.vercel.app (landing → **Open app** shows the **Start here** welcome → **Watch the Attack Arena** for the demo; no wallet needed, sidebar **Start here** reopens it)
 - **Try it in browser:** https://stashway-arena.vercel.app/#try
 - **Attack Arena:** https://stashway-arena.vercel.app/#arena · **Panic:** https://stashway-arena.vercel.app/#panic
 - **Demo vault (NEAR testnet):** [stashway-v2-8201.testnet](https://testnet.nearblocks.io/address/stashway-v2-8201.testnet)
