@@ -213,15 +213,75 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 }
 </style></head>
 <body><div class="app">
-<div class="sb-backdrop" id="sbb"></div><aside class="sidebar" id="sb"><div class="brand"><div class="brand-mark" aria-hidden="true"></div><div class="brand-name">Stashway</div></div><a class="nav-item" data-nav="try" href="#try"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 5l11 7-11 7V5Z"/></svg>Try</a><a class="nav-item" data-nav="vault" href="#vault"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z"/></svg>Vault</a><a class="nav-item" data-nav="policy" href="#policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>Policy</a><a class="nav-item" data-nav="guard" href="#guard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 5 3.2 8.4 7 9.5 3.8-1.1 7-4.5 7-9.5V6l-7-3Z"/></svg>Guard</a><a class="nav-item" data-nav="arena" href="#arena"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>Arena</a><a class="nav-item" data-nav="events" href="#events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5h14v14H5V5Z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Events</a><a class="nav-item" data-nav="panic" href="#panic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16.5h.01"/></svg>Panic</a>
+<div class="sb-backdrop" id="sbb"></div><aside class="sidebar" id="sb"><div class="brand"><div class="brand-mark" aria-hidden="true"></div><div class="brand-name">Stashway</div></div><a class="nav-item" data-nav="setup" href="#setup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12l4 4L19 6"/><circle cx="12" cy="12" r="9"/></svg>Setup</a><a class="nav-item" data-nav="try" href="#try"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 5l11 7-11 7V5Z"/></svg>Try</a><a class="nav-item" data-nav="vault" href="#vault"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z"/></svg>Vault</a><a class="nav-item" data-nav="policy" href="#policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>Policy</a><a class="nav-item" data-nav="guard" href="#guard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 5 3.2 8.4 7 9.5 3.8-1.1 7-4.5 7-9.5V6l-7-3Z"/></svg>Guard</a><a class="nav-item" data-nav="arena" href="#arena"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>Arena</a><a class="nav-item" data-nav="events" href="#events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5h14v14H5V5Z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Events</a><a class="nav-item" data-nav="panic" href="#panic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16.5h.01"/></svg>Panic</a>
 <div style="flex:1"></div><a class="start-link" data-start href="#">Start here</a></aside>
 <section class="main"><div class="topbar"><div style="display:flex;gap:8px;align-items:center"><button class="btn menu" id="menu">☰</button><div class="crumb" id="crumb"></div></div>
 <div class="top-actions"><span class="live" id="live" style="align-self:center">testnet · snapshot</span><button class="btn" id="theme">◐ Theme</button></div></div>
-<div class="content"><div id="page-try" class="page hidden"></div><div id="page-vault" class="page hidden"></div><div id="page-policy" class="page hidden"></div><div id="page-guard" class="page hidden"></div><div id="page-arena" class="page hidden"></div><div id="page-events" class="page hidden"></div><div id="page-panic" class="page hidden"></div></div></section></div>
+<div class="content"><div id="page-setup" class="page hidden"><style id="setup-css">
+.su-banner{border:1px dashed var(--border,#262626);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--muted,#a1a1a1);margin-bottom:16px}
+.su{display:grid;grid-template-columns:220px 1fr;gap:20px}
+.su-rail{display:flex;flex-direction:column;gap:4px;list-style:none;margin:0;padding:0}
+.su-rail button{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:center;width:100%;padding:10px 12px;border-radius:10px;font-size:14px;color:var(--muted,#a1a1a1);cursor:pointer;min-height:44px}
+.su-rail button i{font-style:normal;width:22px;height:22px;border-radius:50%;border:1px solid var(--border,#333);display:grid;place-items:center;font-size:12px}
+.su-rail button.on{background:var(--bg-hover,#141414);color:inherit}
+.su-rail button.on i{border-color:#3DDC97;color:#3DDC97}
+.su-rail button.ok i{background:#3DDC97;border-color:#3DDC97;color:#000}
+.su-card{border:1px solid var(--border,#262626);border-radius:14px;padding:28px;max-width:560px}
+.su-step{display:none}.su-step.on{display:block}
+.su-eb{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#3DDC97;font-weight:600}
+.su-t{font-size:24px;font-weight:600;letter-spacing:-.01em;margin:8px 0}
+.su-ld{font-size:14px;line-height:1.55;color:var(--muted,#a1a1a1);margin:0 0 20px}
+.su-ft{font-size:12px;color:var(--muted,#a1a1a1);margin-top:14px}
+.su-note{font-size:13px;color:var(--muted,#a1a1a1);margin-top:10px;min-height:1em}
+.su-acct{display:none;border:1px solid var(--border,#262626);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-family:ui-monospace,monospace;font-size:13px}
+#setup-step-connect[data-connected="1"] .su-acct{display:block}
+#setup-step-connect[data-connected="1"] #setup-connect{display:none}
+#setup-continue-1{display:none}#setup-step-connect[data-connected="1"] #setup-continue-1{display:inline-flex}
+.su-f{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}.su-f label{font-size:12px;color:var(--muted,#a1a1a1)}
+.su-f input,.su-f textarea{background:transparent;color:inherit;border:1px solid var(--border,#262626);border-radius:10px;padding:10px 12px;font:inherit;font-size:14px}
+.su-row{display:flex;gap:8px;flex-wrap:wrap}
+.su-links a{display:flex;justify-content:space-between;border:1px solid var(--border,#262626);border-radius:10px;padding:14px 16px;margin-bottom:8px;text-decoration:none;color:inherit;min-height:44px;box-sizing:border-box}
+.su-mob{display:none}
+@media(max-width:760px){.su-eb{display:none}.su{grid-template-columns:1fr}.su-rail{display:none}.su-mob{display:block;font-size:13px;color:var(--muted,#a1a1a1);margin-bottom:10px}.su-card{padding:20px;max-width:none}.su-card .btn{width:100%;min-height:44px;justify-content:center}.su-f input,.su-f textarea,.su-ld{font-size:16px}.su-row{flex-direction:column}}
+</style>
+<!-- SETUP WIZARD (Circa). DevOps hooks — define handlers on window.StashwaySetup:
+  onConnect()     bound to #setup-connect      (NEAR wallet-selector) → then call setAccount(owner)
+  onCreate()      bound to #setup-create       (POST /api/provision {owner} → {vault, owner, network, explorer, guard_pub, per_tx_cap, daily_cap}) → setVault(vault); go('agent')
+  onDownloadKey() bound to #setup-download-key
+  onConfirmKey()  bound to #setup-confirm-key  (POST /api/agent-key {vault, owner, agent_pk} → {ok, agent_pk}) → go('rules')
+  onSaveRules()   bound to #setup-save-rules   (reads #setup-cap-tx, #setup-cap-day, #setup-allowlist) → go('done')
+  Helpers: setAccount(owner) · setVault(vault) · go('connect'|'create'|'agent'|'rules'|'done') · setStatus(msg [,step])
+  Unbound buttons show a UI-preview note only. Connect NEVER fakes an account. Remove .su-banner once wired. -->
+<div class="su-banner" id="setup-banner">Setup UI preview — wallet connect and vault provision are being wired.</div>
+<div class="su">
+<ol class="su-rail" id="setup-rail">
+<li><button data-su="connect"><i>1</i>Connect wallet</button></li>
+<li><button data-su="create"><i>2</i>Create vault</button></li>
+<li><button data-su="agent"><i>3</i>Add agent key</button></li>
+<li><button data-su="rules"><i>4</i>Set rules</button></li>
+<li><button data-su="done"><i>5</i>Done</button></li></ol>
+<div class="su-card"><div class="su-mob" id="setup-mob">Step 1 of 5</div>
+<section class="su-step" id="setup-step-connect" data-connected="0"><div class="su-eb">Step 1 of 5</div><div class="su-t">Connect your NEAR testnet wallet</div><p class="su-ld">You’ll own the vault. The agent only gets a limited key.</p>
+<div class="su-acct">Connected · <span id="setup-account">—</span></div>
+<div class="su-row"><button class="btn primary" id="setup-connect">Connect wallet</button><button class="btn primary" id="setup-continue-1">Continue</button></div>
+<div class="su-note" id="setup-connect-note"></div><div class="su-ft">Testnet only · no mainnet funds</div></section>
+<section class="su-step" id="setup-step-create"><div class="su-eb">Step 2 of 5</div><div class="su-t">Create your vault</div><p class="su-ld">Deploys the on-chain leash contract. Caps and allowlist start empty until you set them.</p>
+<div class="su-row"><button class="btn primary" id="setup-create">Create vault</button></div><div class="su-note" id="setup-create-status"></div><div class="su-ft">Vault: <span id="setup-vault" class="mono">not created yet</span></div></section>
+<section class="su-step" id="setup-step-agent"><div class="su-eb">Step 3 of 5</div><div class="su-t">Add your agent’s key</div><p class="su-ld">Download a function-call key that can only call agent_transfer — not full access.</p>
+<div class="su-row"><button class="btn" id="setup-download-key">Download key file</button><button class="btn primary" id="setup-confirm-key">I’ve added it — continue</button></div><div class="su-note" id="setup-agent-status"></div><div class="su-ft">Keep this file private. Panic deletes it on-chain later.</div></section>
+<section class="su-step" id="setup-step-rules"><div class="su-eb">Step 4 of 5</div><div class="su-t">Set the rules</div><p class="su-ld">Your agent can never go past these — even if it’s tricked.</p>
+<div class="su-f"><label for="setup-cap-tx">Max per transfer (NEAR)</label><input id="setup-cap-tx" inputmode="decimal" placeholder="0.2"></div>
+<div class="su-f"><label for="setup-cap-day">Max per day (NEAR)</label><input id="setup-cap-day" inputmode="decimal" placeholder="1"></div>
+<div class="su-f"><label for="setup-allowlist">Allowed receivers (one per line)</label><textarea id="setup-allowlist" rows="3" placeholder="savings.testnet"></textarea></div>
+<div class="su-row"><button class="btn primary" id="setup-save-rules">Save rules</button></div><div class="su-note" id="setup-rules-status"></div></section>
+<section class="su-step" id="setup-step-done"><div class="su-eb">Step 5 of 5</div><div class="su-t">You’re set.</div><p class="su-ld">Your vault is live on testnet with the agent on a leash.</p>
+<div class="su-links"><a href="#try"><span>Try with your agent</span><span>→</span></a><a href="#arena"><span>Watch the Attack Arena</span><span>→</span></a><a href="#vault"><span>Open your vault</span><span>→</span></a></div></section>
+</div></div>
+</div><div id="page-try" class="page hidden"></div><div id="page-vault" class="page hidden"></div><div id="page-policy" class="page hidden"></div><div id="page-guard" class="page hidden"></div><div id="page-arena" class="page hidden"></div><div id="page-events" class="page hidden"></div><div id="page-panic" class="page hidden"></div></div></section></div>
 <script>const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const RPC="https://rpc.testnet.near.org",NB="https://testnet.nearblocks.io";
 const HUMAN={1:"Saved safely",2:"Injection stopped",3:"Swapped after signing — refused",4:"Same permit twice — refused",5:"Hold up — new receiver",6:"Panic"};
-const TABS=["try","vault","policy","guard","arena","events","panic"],CRUMB={try:"Judges / <b>Try with your agent</b>",vault:"Account / <b>Vault</b>",policy:"Account / <b>Policy</b>",guard:"Security / <b>Guard</b>",arena:"Security / <b>Attack Arena</b>",events:"Security / <b>Events</b>",panic:"Security / <b>Panic</b>"};
+const TABS=["setup","try","vault","policy","guard","arena","events","panic"],CRUMB={setup:"Start / <b>Set up your vault</b>",try:"Judges / <b>Try with your agent</b>",vault:"Account / <b>Vault</b>",policy:"Account / <b>Policy</b>",guard:"Security / <b>Guard</b>",arena:"Security / <b>Attack Arena</b>",events:"Security / <b>Events</b>",panic:"Security / <b>Panic</b>"};
 const cls=v=>{v=String(v||"").toUpperCase();if(/ALLOW|ONCHAIN_OK|OWNER|^OK/.test(v))return"ok";if(/WARN|WAIT|PENDING/.test(v))return"warn";if(/BLOCK|REJECT|REFUS|REVOKED|ERR|FROZEN|SKIP/.test(v))return"danger";return"mut"};
 const chip=v=>v?`<span class="chip ${cls(v)}">${esc(String(v).split(" ")[0])}</span>`:"";
 const link=s=>s&&s.url?`<a href="${s.url}" target="_blank">tx ↗</a>`:"";
@@ -300,7 +360,8 @@ ${esc(call(V,O,"set_agent",{agent:null,agent_key:"ed25519:NEW_PK"}))}</pre><div 
 <div id="welcome" class="hidden" role="dialog" aria-modal="true" aria-labelledby="wct"><div class="wc">
 <div class="eb">Start here</div><h2 id="wct">This vault is already live.</h2>
 <p class="ld">You’re not connecting a wallet. Stashway is a demo vault on NEAR testnet — set up so you can see an AI agent on a leash.</p>
-<div class="wp"><a class="pc pri" data-wgo="arena"><b>Watch the Attack Arena</b><span>See how Stashway stops real attack attempts.</span></a>
+<div class="wp"><a class="pc pri" data-wgo="setup"><b>Set up your vault</b><span>Connect a NEAR testnet wallet, create a vault, put your agent on a leash.</span></a>
+<a class="pc" data-wgo="arena"><b>Watch the Attack Arena</b><span>See how Stashway stops real attack attempts.</span></a>
 <a class="pc" data-wgo="try"><b>Try with your AI agent</b><span>Send a transfer request from any agent — no wallet needed.</span></a>
 <div class="pc note"><b>Why no “Connect wallet”?</b><span>The demo vault is already funded on testnet. Owner steps like Panic and confirm use copy-commands for now.</span></div></div>
 <div class="ft"><a data-wgo="vault" href="#vault">Skip to vault →</a></div></div></div>
@@ -312,4 +373,64 @@ W.addEventListener("click",function(e){var a=e.target.closest("[data-wgo]");if(a
 addEventListener("keydown",function(e){if(e.key==="Escape"&&!W.classList.contains("hidden"))closeWelcome("vault")});
 document.querySelectorAll("[data-start]").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();openWelcome()})});
 var h=location.hash.slice(1);if(!seen()&&(h===""||h==="vault"))openWelcome();})();</script>
+<script>(function(){var S=["connect","create","agent","rules","done"],cur="connect",done={};
+var g=function(i){return document.getElementById(i)},stat={create:"setup-create-status",agent:"setup-agent-status",rules:"setup-rules-status",connect:"setup-connect-note"};
+var PREVIEW={onConnect:["connect","Connect will open NEAR wallet-selector once provision is live."],onCreate:["create","Preview only — Create calls /api/provision in the next deploy. No vault was created."],onDownloadKey:["agent","Preview only — the key file downloads once /api/agent-key is wired."],onConfirmKey:["agent","Preview only — key registration wires next."],onSaveRules:["rules","Preview only — rules save on-chain once wiring ships."]};
+function go(s){if(S.indexOf(s)<0)return;S.slice(0,S.indexOf(s)).forEach(function(x){done[x]=1});cur=s;S.forEach(function(x,i){g("setup-step-"+x).classList.toggle("on",x===s);var b=document.querySelector('[data-su="'+x+'"]');b.classList.toggle("on",x===s);b.classList.toggle("ok",!!done[x]&&x!==s)});g("setup-mob").textContent="Step "+(S.indexOf(s)+1)+" of 5"}
+function setStatus(m,s){var e=g(stat[s||cur]||"setup-create-status");if(e)e.textContent=m||""}
+var API=window.StashwaySetup=Object.assign(window.StashwaySetup||{},{go:go,setStatus:setStatus,
+setAccount:function(o){g("setup-account").textContent=o;g("setup-step-connect").dataset.connected=o?"1":"0";setStatus("","connect")},
+setVault:function(v){g("setup-vault").textContent=v;done.create=1}});
+function bind(id,h){g(id).addEventListener("click",function(){if(typeof API[h]==="function")return API[h]();setStatus(PREVIEW[h][1],PREVIEW[h][0])})}
+bind("setup-connect","onConnect");bind("setup-create","onCreate");bind("setup-download-key","onDownloadKey");bind("setup-confirm-key","onConfirmKey");bind("setup-save-rules","onSaveRules");
+g("setup-continue-1").addEventListener("click",function(){go("create")});
+// Rail: any step clickable while in UI preview (banner present) for layout QA; once wired, only completed/current steps.
+g("setup-rail").addEventListener("click",function(e){var b=e.target.closest("[data-su]");if(!b)return;var s=b.dataset.su;if(g("setup-banner")||done[s]||S.indexOf(s)<=S.indexOf(cur))go(s)});
+var q=new URLSearchParams(location.search).get("step");go(S.indexOf(q)>=0?q:"connect");})();</script>
+<script type="module">
+// Setup wiring: MyNearWallet (testnet) login → /api/provision → agent FC key → owner signs set_agent / set_guard / set_policy / allow.
+const W="https://testnet.mynearwallet.com",SK="stashway-setup-v1",API=window.StashwaySetup,$g=i=>document.getElementById(i);
+const st=()=>{try{return JSON.parse(localStorage.getItem(SK))||{}}catch{return{}}},put=o=>localStorage.setItem(SK,JSON.stringify({...st(),...o}));
+let N;const near=async()=>N||(N=await import("https://esm.sh/near-api-js@4.0.4"));
+const yo=n=>{const[i,f=""]=String(n).trim().split(".");return BigInt(i+(f+"0".repeat(24)).slice(0,24)).toString()};
+const back=s=>location.origin+"/?step="+s+"#setup";
+$g("setup-banner")?.remove();
+async function owner(){const s=st(),n=await near(),ks=new n.keyStores.InMemoryKeyStore();await ks.setKey("testnet",s.owner,n.KeyPair.fromString(s.session));
+ return (await n.connect({networkId:"testnet",nodeUrl:"https://rpc.testnet.near.org",keyStore:ks})).account(s.owner)}
+const fc=async(m,a)=>{const r=await (await owner()).functionCall({contractId:st().vault,methodName:m,args:a,gas:30000000000000n,attachedDeposit:0n});return r.transaction.hash};
+async function authorize(step){const n=await near(),k=n.KeyPair.fromRandom("ed25519");put({session:k.toString(),sessionFor:st().vault,resume:step});
+ location.href=`${W}/login/?contract_id=${st().vault}&public_key=${k.getPublicKey()}&success_url=${encodeURIComponent(back(step))}&failure_url=${encodeURIComponent(back(step))}`}
+const nb=h=>`<a href="https://testnet.nearblocks.io/txns/${h}" target="_blank">tx ↗</a>`;
+const say=(m,s)=>{API.setStatus("",s);const e=$g({connect:"setup-connect-note",create:"setup-create-status",agent:"setup-agent-status",rules:"setup-rules-status"}[s]);if(e)e.innerHTML=m};
+Object.assign(API,{
+ onConnect(){location.href=`${W}/login/?success_url=${encodeURIComponent(back("create"))}&failure_url=${encodeURIComponent(back("connect"))}`},
+ async onCreate(){const o=st().owner;if(!o)return API.go("connect");say("Creating your vault on testnet… (~15s)","create");
+  const r=await fetch("/api/provision",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({owner:o})}),j=await r.json();
+  if(!r.ok)return say("Couldn’t create: "+(j.error||r.status),"create");put({vault:j.vault,guard_pub:j.guard_pub,agent:null,session:null});API.setVault(j.vault);
+  say(`Vault <b>${j.vault}</b> is live · <a href="${j.explorer}" target="_blank">nearblocks ↗</a>`,"create");setTimeout(()=>API.go("agent"),1200)},
+ async onDownloadKey(){const s=st();if(!s.vault)return API.go("create");const n=await near(),k=n.KeyPair.fromRandom("ed25519");
+  const pk=k.getPublicKey().toString();put({agent_pk:pk});
+  const b=new Blob([JSON.stringify({account_id:s.vault,public_key:pk,private_key:k.toString(),network:"testnet",can_call:["agent_transfer"]},null,1)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="agent-key.json";a.click();say("Saved <b>agent-key.json</b> — give this file to your agent. Then press continue.","agent")},
+ async onConfirmKey(){const s=st();if(!s.agent_pk)return say("Download the key file first.","agent");
+  if(!s.agentAdded){say("Adding the agent key to your vault…","agent");const r=await fetch("/api/agent-key",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({vault:s.vault,owner:s.owner,agent_pk:s.agent_pk})}),j=await r.json();
+   if(!r.ok)return say("Couldn’t add key: "+(j.error||r.status),"agent");put({agentAdded:1})}
+  if(!s.session||s.sessionFor!==s.vault){say("Approve Stashway in your wallet (one time)…","agent");return authorize("agent")}
+  try{say("Registering your agent on the vault…","agent");const h=await fc("set_agent",{agent:null,agent_key:s.agent_pk});say("Agent registered "+nb(h),"agent");setTimeout(()=>API.go("rules"),1000)}catch(e){say("Wallet call failed: "+esc(e.message),"agent")}},
+ async onSaveRules(){const s=st(),tx=$g("setup-cap-tx").value||"0.2",day=$g("setup-cap-day").value||"1";
+  const list=$g("setup-allowlist").value.split(/[\s,]+/).map(x=>x.trim().toLowerCase()).filter(Boolean);
+  if(!s.session||s.sessionFor!==s.vault){put({rules:{tx,day,list}});return authorize("rules")}
+  try{const hs=[];say("Saving rules on-chain (one tx each)…","rules");
+   hs.push(await fc("set_guard",{guard_pk:s.guard_pub}));hs.push(await fc("set_policy",{per_tx_cap:yo(tx),daily_cap:yo(day)}));
+   for(const r of list)hs.push(await fc("allow",{receiver:r}));
+   say(`Rules saved: ${tx} NEAR/transfer · ${day} NEAR/day · ${list.length} receiver(s) ${hs.map(nb).join(" ")}`,"rules");setTimeout(()=>API.go("done"),1500)}catch(e){say("Wallet call failed: "+esc(e.message),"rules")}}
+});
+// Resume after wallet redirect
+const q=new URLSearchParams(location.search),acct=q.get("account_id");
+if(acct){put({owner:acct});history.replaceState(null,"","/#setup")}
+const s=st();if(s.owner)API.setAccount(s.owner);if(s.vault)API.setVault(s.vault);
+if(acct&&s.resume==="agent"){put({resume:null});API.go("agent");API.onConfirmKey()}
+else if(acct&&s.resume==="rules"){put({resume:null});API.go("rules");const r=s.rules||{};$g("setup-cap-tx").value=r.tx||"";$g("setup-cap-day").value=r.day||"";$g("setup-allowlist").value=(r.list||[]).join("\n");API.onSaveRules()}
+else if(acct){API.go(s.vault?"agent":"create")}
+</script>
 </body></html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>(function(){var A=["start","vault","guard","try","arena","panic","policy","events"],on=0;
+<script>(function(){var A=["start","setup","vault","guard","try","arena","panic","policy","events"],on=0;
 function want(){return A.indexOf(location.hash.slice(1))>=0}
 function go(){if(on||!want())return;on=1;if(document.documentElement)document.documentElement.style.visibility="hidden";
 fetch("/app.html",{cache:"no-cache"}).then(function(r){return r.text()}).then(function(h){document.open();document.write(h);document.close();scrollTo(0,0)});}

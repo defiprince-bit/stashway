@@ -1,3 +1,14 @@
+# Stashway demo (film script)
+
+DEMO.md is intentionally public — judges use it to reproduce the demo.
+
+## Film path (~90s) — https://stashway-arena.vercel.app → Open app → Setup
+1. **Connect wallet** → MyNearWallet (testnet) → approve → back on Setup showing your account.
+2. **Create vault** → ~15s → vault id + nearblocks link (real deploy, owner = your wallet).
+3. **Download key file** (`agent-key.json` — function-call key that can only call `agent_transfer`) → **I've added it — continue** → approve Stashway in wallet once → `set_agent` tx.
+4. **Set the rules**: 0.2 NEAR/transfer, 1 NEAR/day, allow e.g. `savings.testnet` → **Save rules** (set_guard + set_policy + allow txs).
+5. **Done** → Attack Arena: show one injection getting BLOCKed → **Panic** last.
+
 # Stashway — 60s demo script (testnet)
 
 Setup (no wallet needed — the testnet vault is already live):
