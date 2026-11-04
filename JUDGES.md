@@ -14,7 +14,7 @@
 | Agent key (function-call, `agent_transfer` only) | `ed25519:EnXcyJGwodV9bCHahiL8mn4DSGWxuKgVoozSKCZGRhof` |
 | Guard pubkey (raw, base64) | `Rhm6SB2swNLNUCbp4bXM84/WNdH70W7w8QrU6g37H20=` |
 | Try API | `https://stashway-arena.vercel.app/api/intent` · health: [`/api/health`](https://stashway-arena.vercel.app/api/health) |
-| In-browser | [stashway-arena.vercel.app/#Try](https://stashway-arena.vercel.app/#Try) |
+| In-browser | [stashway-arena.vercel.app/app#try](https://stashway-arena.vercel.app/app#try) |
 
 The sandbox agent secret and Guard key live **only in Vercel env**, not in git and not in this doc. The API is the agent's hands: your LLM decides what to ask, and Stashway decides what actually happens.
 

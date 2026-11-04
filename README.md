@@ -12,7 +12,7 @@
 - **Attack Arena (live UI):** https://stashway-arena.vercel.app
 - **Vault (NEAR testnet):** [stashway-v2-8201.testnet](https://testnet.nearblocks.io/address/stashway-v2-8201.testnet)
 - **Repo:** https://github.com/defiprince-bit/stashway
-- **Judges:** test with your own AI agent, see [JUDGES.md](JUDGES.md). Sandbox vault [stashway-judge-3074.testnet](https://testnet.nearblocks.io/address/stashway-judge-3074.testnet) (0.2 NEAR/tx, 1 NEAR/day), try API `POST https://stashway-arena.vercel.app/api/intent`, health [`/api/health`](https://stashway-arena.vercel.app/api/health), in-browser [#Try](https://stashway-arena.vercel.app/#Try). No wallet needed.
+- **Judges:** test with your own AI agent, see [JUDGES.md](JUDGES.md). Sandbox vault [stashway-judge-3074.testnet](https://testnet.nearblocks.io/address/stashway-judge-3074.testnet) (0.2 NEAR/tx, 1 NEAR/day), try API `POST https://stashway-arena.vercel.app/api/intent`, health [`/api/health`](https://stashway-arena.vercel.app/api/health), in-browser [app#try](https://stashway-arena.vercel.app/app#try). No wallet needed.
 
 ## Clone & run
 ```bash
@@ -94,6 +94,6 @@ Result labels: `OFFCHAIN_REFUSAL` (Guard refused, no tx exists), `WAITING_OWNER_
 Testnet only, no real funds. No secrets in git: near-cli keys live in `~/.near-credentials`, and the Guard key in `guard/.guard-key.json` (gitignored).
 
 ## Web UI features
-- `web/index.html`: ALLOW/WARN/BLOCK chips, evidence grid, step timelines, Events drawer, Guard **owner-confirm panel** (prefilled from pending WARN, copyable `owner_confirm`), **hold-to-confirm Panic** (copies owner `panic` CLI; page never holds keys) + recovery commands.
+- `web/app.html`: ALLOW/WARN/BLOCK chips, evidence grid, step timelines, Events drawer, Guard **owner-confirm panel** (prefilled from pending WARN, copyable `owner_confirm`), **hold-to-confirm Panic** (copies owner `panic` CLI; page never holds keys) + recovery commands.
 - `arena/panic.mjs` / `scripts/panic-demo.sh`: Arena scenario 6, a real panic + recovery with a fresh agent key. `arena/run.mjs` keeps scenario 6 on re-runs.
 - `DEMO.md`: 60-second demo walkthrough with nearblocks links.
