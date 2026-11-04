@@ -1,6 +1,6 @@
 # Stashway — 60s demo script (testnet)
 
-Setup: film against the live app: https://stashway-arena.vercel.app/app#arena (Arena) and https://stashway-arena.vercel.app/app#panic (Panic). Keep nearblocks tabs pre-opened.
+Setup: film against the live app: https://stashway-arena.vercel.app/#arena (Arena) and https://stashway-arena.vercel.app/#panic (Panic). Keep nearblocks tabs pre-opened.
 Local (optional): `python3 -m http.server -d web 8787` → http://localhost:8787/app.html#arena.
 Post: public repo + this demo on X with #NEARHackathon by Nov 14, 23:59 UTC.
 Vault: `stashway-v2-8201.testnet` · **Film the panic beat LAST** (or replay the recorded one — vault is already recovered).
