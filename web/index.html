@@ -1,31 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <title>Stashway — on-chain leash for AI agents</title>
 <link rel="icon" href="assets/mark-mint.png"/><link rel="preload" href="results.json" as="fetch" crossorigin/>
 <script>try{var t=localStorage.getItem("sw-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <style>
   :root, [data-theme="dark"] {
-    --bg: #0b0d10;
-    --bg-sidebar: #0e1116;
-    --bg-elev: #12151b;
-    --bg-hover: #1a1f27;
-    --border: #232833;
-    --text: #e8eaed;
-    --text-2: #9aa3b2;
-    --text-3: #6b7380;
+    --bg: #000000;
+    --bg-sidebar: #050505;
+    --bg-elev: #0c0c0c;
+    --bg-hover: #141414;
+    --border: #1c1c1c;
+    --text: #ffffff;
+    --text-2: rgba(255,255,255,.62);
+    --text-3: rgba(255,255,255,.38);
     --mint: #3DDC97;
     --mint-dim: rgba(61,220,151,.14);
     --danger: #e45858;
     --danger-bg: rgba(228,88,88,.16);
-    --warn: #d4a017;
-    --warn-bg: rgba(212,160,23,.16);
-    --ok-bg: rgba(61,220,151,.16);
-    --chip-fg-ok: #0d1f17;
+    --warn: #e0b13a;
+    --warn-bg: rgba(224,177,58,.14);
+    --ok-bg: rgba(61,220,151,.14);
+    --chip-fg-ok: #04140d;
     --chip-fg-danger: #fff;
     --chip-fg-warn: #1a1405;
     --shadow: none;
     --mark: url(assets/mark-mint.png);
+    --glow: radial-gradient(ellipse 50% 40% at 85% -10%, rgba(61,220,151,.18), transparent 60%);
   }
   [data-theme="light"] {
     --bg: #f5f6f8;
@@ -51,7 +55,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
-    font: 12.5px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font: 12.5px/1.45 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
@@ -162,6 +166,32 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 .live{font-size:10.5px;color:var(--text-3)}#hold{position:relative;overflow:hidden;height:36px;padding:0 16px}#hold i{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(0,0,0,.25)}#hold span{position:relative}
 .menu{display:none}
 @media(max-width:760px){.sidebar{position:fixed;z-index:9;left:0;transform:translateX(-100%);transition:.15s}.sidebar.open{transform:none}.menu{display:inline-flex}.metrics{grid-template-columns:1fr}.grid2,.kv{grid-template-columns:1fr}.content,.topbar{padding-left:12px;padding-right:12px}.row{flex-wrap:wrap}}
+
+  body { background-image: var(--glow, none); background-attachment: fixed; }
+  .brand-name { letter-spacing: -0.02em; }
+  .nav-item.active {
+    background: rgba(61,220,151,.10);
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px rgba(61,220,151,.22);
+  }
+  [data-theme="light"] .nav-item.active {
+    background: rgba(31,158,108,.10);
+    box-shadow: inset 0 0 0 1px rgba(31,158,108,.22);
+  }
+  .page-title {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.03em;
+  }
+  .btn-primary, .btn.primary {
+    background: #fff; color: #0a0a0a; border-color: #fff;
+    border-radius: 999px; font-weight: 600;
+  }
+  [data-theme="light"] .btn-primary, [data-theme="light"] .btn.primary {
+    background: #0a0a0a; color: #fff; border-color: #0a0a0a;
+  }
+  .btn { border-radius: 999px; }
+  .panel { border-radius: 12px; background: var(--bg-elev); }
+  .chip.ok { background: var(--mint); }
+  .chip { border-radius: 999px; }
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sb"><div class="brand"><div class="brand-mark" aria-hidden="true"></div><div class="brand-name">Stashway</div></div><a class="nav-item" data-nav="try" href="#try"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 5l11 7-11 7V5Z"/></svg>Try</a><a class="nav-item" data-nav="vault" href="#vault"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z"/></svg>Vault</a><a class="nav-item" data-nav="policy" href="#policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>Policy</a><a class="nav-item" data-nav="guard" href="#guard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 5 3.2 8.4 7 9.5 3.8-1.1 7-4.5 7-9.5V6l-7-3Z"/></svg>Guard</a><a class="nav-item" data-nav="arena" href="#arena"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>Arena</a><a class="nav-item" data-nav="events" href="#events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5h14v14H5V5Z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Events</a><a class="nav-item" data-nav="panic" href="#panic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16.5h.01"/></svg>Panic</a>
