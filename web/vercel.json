@@ -1,2 +1,3 @@
 { "functions": { "api/*.mjs": { "maxDuration": 60 } },
-  "rewrites": [ { "source": "/", "destination": "/landing.html" }, { "source": "/app", "destination": "/index.html" } ] }
+  "rewrites": [ { "source": "/app", "destination": "/app.html" } ],
+  "redirects": [ { "source": "/landing.html", "destination": "/", "permanent": false } ] }
