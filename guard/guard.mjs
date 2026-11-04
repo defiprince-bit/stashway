@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { view, viewAccount } from "../lib/near.mjs";
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
-const KEY = path.join(DIR, ".guard-key.json");       // gitignored, testnet-only key
+const KEY = process.env.GUARD_KEY_FILE || path.join(DIR, ".guard-key.json"); // gitignored, testnet-only key
 const EVENTS = path.join(DIR, "events.jsonl");       // security event log (gitignored, exported to web/)
 const DRIFT = path.join(DIR, "code-hashes.json");    // Trust Drift memory
 const BLOCKLIST = JSON.parse(fs.readFileSync(path.join(DIR, "blocklist.json")));

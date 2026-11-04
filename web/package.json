@@ -1,0 +1,13 @@
+{
+ "name": "web",
+ "version": "1.0.0",
+ "description": "",
+ "keywords": [],
+ "author": "",
+ "license": "ISC",
+ "type": "module",
+ "dependencies": {
+  "near-api-js": "^4.0.4"
+ },
+ "private": true
+}

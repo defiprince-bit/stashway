@@ -8,6 +8,7 @@
 - **Attack Arena (live UI):** https://stashway-arena.vercel.app
 - **Vault (NEAR testnet):** [stashway-v2-8201.testnet](https://testnet.nearblocks.io/address/stashway-v2-8201.testnet)
 - **Repo:** https://github.com/defiprince-bit/stashway
+- **🧪 Judges: test with your own AI agent → [JUDGES.md](JUDGES.md)**. Sandbox vault [stashway-judge-3074.testnet](https://testnet.nearblocks.io/address/stashway-judge-3074.testnet) (0.2 NEAR/tx, 1 NEAR/day), try API `POST https://stashway-arena.vercel.app/api/intent`, health [`/api/health`](https://stashway-arena.vercel.app/api/health), in-browser [#Try](https://stashway-arena.vercel.app/#Try). No wallet needed.
 
 ## Clone & run
 ```bash
