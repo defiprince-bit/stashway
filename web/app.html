@@ -252,7 +252,7 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
   onSaveRules()   bound to #setup-save-rules   (reads #setup-cap-tx, #setup-cap-day, #setup-allowlist) → go('done')
   Helpers: setAccount(owner) · setVault(vault) · go('connect'|'create'|'agent'|'rules'|'done') · setStatus(msg [,step])
   Unbound buttons show a UI-preview note only. Connect NEVER fakes an account. Remove .su-banner once wired. -->
-<div class="su-banner" id="setup-banner">Setup UI preview — wallet connect and vault provision are being wired.</div>
+
 <div class="su">
 <ol class="su-rail" id="setup-rail">
 <li><button data-su="connect"><i>1</i>Connect wallet</button></li>
@@ -263,7 +263,7 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 <div class="su-card"><div class="su-mob" id="setup-mob">Step 1 of 5</div>
 <section class="su-step" id="setup-step-connect" data-connected="0"><div class="su-eb">Step 1 of 5</div><div class="su-t">Connect your NEAR testnet wallet</div><p class="su-ld">You’ll own the vault. The agent only gets a limited key.</p>
 <div class="su-acct">Connected · <span id="setup-account">—</span></div>
-<div class="su-row"><span id="setup-wallets" style="display:inline-flex;gap:6px;flex-wrap:wrap"><button class="btn primary" data-w="meteor-wallet">Meteor Wallet</button><button class="btn" data-w="mnw">MyNearWallet</button><button class="btn" data-w="here-wallet">HERE Wallet</button></span><button class="btn primary" id="setup-connect" style="display:none">Connect wallet</button><button class="btn primary" id="setup-continue-1">Continue</button></div>
+<div class="su-row"><span id="setup-wallets" style="display:inline-flex;gap:6px;flex-wrap:wrap"><button class="btn primary" data-w="meteor-wallet">Meteor Wallet</button><button class="btn" data-w="mnw">MyNearWallet</button><button class="btn" data-w="here-wallet">HERE Wallet</button></span><div style="font-size:12px;color:var(--muted,#a1a1a1);margin-top:6px;width:100%">Web wallets open in a pop-up — allow pop-ups for this site. Set your wallet to testnet. On mobile, use a desktop browser or MyNearWallet if Meteor won’t open.</div><button class="btn primary" id="setup-connect" style="display:none">Connect wallet</button><button class="btn primary" id="setup-continue-1">Continue</button></div>
 <div class="su-note" id="setup-connect-note"></div><div class="su-ft">Testnet only · no mainnet funds</div></section>
 <section class="su-step" id="setup-step-create"><div class="su-eb">Step 2 of 5</div><div class="su-t">Create your vault</div><p class="su-ld">Deploys the on-chain leash contract. Caps and allowlist start empty until you set them.</p>
 <div class="su-row"><button class="btn primary" id="setup-create">Create vault</button></div><div class="su-note" id="setup-create-status"></div><div class="su-ft">Vault: <span id="setup-vault" class="mono">not created yet</span></div></section>
@@ -375,7 +375,7 @@ document.querySelectorAll("[data-start]").forEach(function(a){a.addEventListener
 var h=location.hash.slice(1);if(!seen()&&(h===""||h==="vault"))openWelcome();})();</script>
 <script>(function(){var S=["connect","create","agent","rules","done"],cur="connect",done={};
 var g=function(i){return document.getElementById(i)},stat={create:"setup-create-status",agent:"setup-agent-status",rules:"setup-rules-status",connect:"setup-connect-note"};
-var PREVIEW={onConnect:["connect","Connect will open NEAR wallet-selector once provision is live."],onCreate:["create","Preview only — Create calls /api/provision in the next deploy. No vault was created."],onDownloadKey:["agent","Preview only — the key file downloads once /api/agent-key is wired."],onConfirmKey:["agent","Preview only — key registration wires next."],onSaveRules:["rules","Preview only — rules save on-chain once wiring ships."]};
+var PREVIEW={onConnect:["connect","Wallet module still loading — wait a moment and try again, or hard refresh."],onCreate:["create","Still loading — wait a moment and retry."],onDownloadKey:["agent","Still loading — wait a moment and retry."],onConfirmKey:["agent","Still loading — wait a moment and retry."],onSaveRules:["rules","Still loading — wait a moment and retry."]};
 function go(s){if(S.indexOf(s)<0)return;S.slice(0,S.indexOf(s)).forEach(function(x){done[x]=1});cur=s;S.forEach(function(x,i){g("setup-step-"+x).classList.toggle("on",x===s);var b=document.querySelector('[data-su="'+x+'"]');b.classList.toggle("on",x===s);b.classList.toggle("ok",!!done[x]&&x!==s)});g("setup-mob").textContent="Step "+(S.indexOf(s)+1)+" of 5"}
 function setStatus(m,s){var e=g(stat[s||cur]||"setup-create-status");if(e)e.textContent=m||""}
 var API=window.StashwaySetup=Object.assign(window.StashwaySetup||{},{go:go,setStatus:setStatus,
