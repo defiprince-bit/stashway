@@ -1,14 +1,18 @@
-# Stashway — an AI can manage your savings, but it can't drain them
+# Stashway: let an AI manage your savings without letting it drain them
 
-<img src="web/logo.jpg" width="64" alt="Stashway mark B">
+<img src="web/logo.jpg" width="64" alt="Stashway logo">
 
-**The AI suggests, the Guard checks, the contract decides.** Built at NEAR HACKATHON, track: AI Security & Defense. **Testnet only.**
+**The AI suggests, the Guard checks, the contract decides.** Built for the NEAR hackathon (AI Security & Defense track).
+
+**Status:** working V2 on NEAR testnet (contract, Guard, Attack Arena UI). Not deployed to mainnet; no real funds.
+
+**Stack:** Rust near-sdk 5.30 contract · Node.js Guard and agent · static web UI on Vercel · NEAR RPC
 
 ## Live
 - **Attack Arena (live UI):** https://stashway-arena.vercel.app
 - **Vault (NEAR testnet):** [stashway-v2-8201.testnet](https://testnet.nearblocks.io/address/stashway-v2-8201.testnet)
 - **Repo:** https://github.com/defiprince-bit/stashway
-- **🧪 Judges: test with your own AI agent → [JUDGES.md](JUDGES.md)**. Sandbox vault [stashway-judge-3074.testnet](https://testnet.nearblocks.io/address/stashway-judge-3074.testnet) (0.2 NEAR/tx, 1 NEAR/day), try API `POST https://stashway-arena.vercel.app/api/intent`, health [`/api/health`](https://stashway-arena.vercel.app/api/health), in-browser [#Try](https://stashway-arena.vercel.app/#Try). No wallet needed.
+- **Judges:** test with your own AI agent, see [JUDGES.md](JUDGES.md). Sandbox vault [stashway-judge-3074.testnet](https://testnet.nearblocks.io/address/stashway-judge-3074.testnet) (0.2 NEAR/tx, 1 NEAR/day), try API `POST https://stashway-arena.vercel.app/api/intent`, health [`/api/health`](https://stashway-arena.vercel.app/api/health), in-browser [#Try](https://stashway-arena.vercel.app/#Try). No wallet needed.
 
 ## Clone & run
 ```bash
@@ -76,9 +80,9 @@ Result labels: `OFFCHAIN_REFUSAL` (Guard refused, no tx exists), `WAITING_OWNER_
 | Owner allowlists savings | [3C14Chbx…](https://testnet.nearblocks.io/txns/3C14Chbx1jagLFGZSkEtccAxDJuQzyU1DxvEsCEeS3Fq) |
 | Owner adds agent key | [84PqYjRv…](https://testnet.nearblocks.io/txns/84PqYjRvWy9SUtwQDk2BxUEgkurtzv7pnK6WJny7jkQm) |
 | Owner registers agent key | [uhG51i2e…](https://testnet.nearblocks.io/txns/uhG51i2eovMYhHUy4XrDFxTn8TPQHH1KYa8TiDTT1YZ) |
-| 🔴 **Red team:** injected agent sends 100 NEAR to evil.testnet → `ERR_NOT_ALLOWLISTED` | [eY8obnDc…](https://testnet.nearblocks.io/txns/eY8obnDc6hVSfMnfouCUQAwyGBgXVAHZMV7c5zJkxDx) |
-| 🔴 Agent tries 5 NEAR to savings → `ERR_OVER_PER_TX_CAP` | [EtNhgpS1…](https://testnet.nearblocks.io/txns/EtNhgpS12E5SyqodwsxHyUag5Crguaae1cmBfg8ugKha) |
-| 🟢 Agent saves 0.5 NEAR to the allowlisted receiver → success | [nXesEgmV…](https://testnet.nearblocks.io/txns/nXesEgmVMP9RojTb4G6m9jZAo1jWUoDg5DJZtEQsW9A) |
+| Red team: injected agent sends 100 NEAR to evil.testnet → `ERR_NOT_ALLOWLISTED` | [eY8obnDc…](https://testnet.nearblocks.io/txns/eY8obnDc6hVSfMnfouCUQAwyGBgXVAHZMV7c5zJkxDx) |
+| Agent tries 5 NEAR to savings → `ERR_OVER_PER_TX_CAP` | [EtNhgpS1…](https://testnet.nearblocks.io/txns/EtNhgpS12E5SyqodwsxHyUag5Crguaae1cmBfg8ugKha) |
+| Agent saves 0.5 NEAR to the allowlisted receiver → success | [nXesEgmV…](https://testnet.nearblocks.io/txns/nXesEgmVMP9RojTb4G6m9jZAo1jWUoDg5DJZtEQsW9A) |
 
 `agent.mjs --send` signs locally with the agent key file and broadcasts via RPC, printing the nearblocks link for allowed and rejected transactions alike.
 
@@ -89,7 +93,7 @@ Result labels: `OFFCHAIN_REFUSAL` (Guard refused, no tx exists), `WAITING_OWNER_
 ## Note
 Testnet only, no real funds. No secrets in git: near-cli keys live in `~/.near-credentials`, and the Guard key in `guard/.guard-key.json` (gitignored).
 
-## V2 Thu polish (new)
-- `web/index.html` restyled glass+neon (mark B): ALLOW/WARN/BLOCK chips, evidence grid, step timelines, Events drawer, Guard **owner-confirm panel** (prefilled from pending WARN, copyable `owner_confirm`), **hold-to-confirm Panic** (copies owner `panic` CLI; page never holds keys) + recovery commands.
-- `arena/panic.mjs` / `scripts/panic-demo.sh`: Arena scenario 6 — real panic + recovery with a fresh agent key. `arena/run.mjs` keeps scenario 6 on re-runs.
-- `DEMO.md`: 60s film script with nearblocks links.
+## Web UI features
+- `web/index.html`: ALLOW/WARN/BLOCK chips, evidence grid, step timelines, Events drawer, Guard **owner-confirm panel** (prefilled from pending WARN, copyable `owner_confirm`), **hold-to-confirm Panic** (copies owner `panic` CLI; page never holds keys) + recovery commands.
+- `arena/panic.mjs` / `scripts/panic-demo.sh`: Arena scenario 6, a real panic + recovery with a fresh agent key. `arena/run.mjs` keeps scenario 6 on re-runs.
+- `DEMO.md`: 60-second demo walkthrough with nearblocks links.
