@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>(function(){var A=["vault","try","arena","panic","policy","events"],on=0;
+<script>(function(){var A=["start","vault","guard","try","arena","panic","policy","events"],on=0;
 function want(){return A.indexOf(location.hash.slice(1))>=0}
 function go(){if(on||!want())return;on=1;if(document.documentElement)document.documentElement.style.visibility="hidden";
 fetch("/app.html",{cache:"no-cache"}).then(function(r){return r.text()}).then(function(h){document.open();document.write(h);document.close();scrollTo(0,0)});}
@@ -223,7 +223,7 @@ go();addEventListener("hashchange",go);})();</script>
         <a href="#guard">Guard</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="btn-white" href="#vault">Open app</a>
+      <a class="btn-white" href="#start">Open app</a>
     </div>
   </header>
 
@@ -235,7 +235,7 @@ go();addEventListener("hashchange",go);})();</script>
       <h1 class="headline">Vault<span class="cursor" aria-hidden="true"></span></h1>
       <p class="sub">AI can manage your money — Stashway puts it on a leash so the agent can’t drain you.</p>
       <div class="hero-ctas">
-        <a class="btn-lg" href="#vault">Get started now</a>
+        <a class="btn-lg" href="#start">Get started now</a>
         <a class="btn-ghost" href="#how">How it works</a>
       </div>
     </div>
@@ -294,7 +294,7 @@ go();addEventListener("hashchange",go);})();</script>
     <div class="orb" aria-hidden="true"></div>
     <h2>Your agent.<br/><span class="em">On a leash.</span></h2>
     <div class="actions">
-      <a class="btn-lg" href="#vault">Open the vault</a>
+      <a class="btn-lg" href="#start">Open the app</a>
       <a class="btn-ghost" href="#try">Try with your agent</a>
     </div>
   </section>
