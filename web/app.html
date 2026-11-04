@@ -279,7 +279,7 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 </div></div>
 </div><div id="page-try" class="page hidden"></div><div id="page-vault" class="page hidden"></div><div id="page-policy" class="page hidden"></div><div id="page-guard" class="page hidden"></div><div id="page-arena" class="page hidden"></div><div id="page-events" class="page hidden"></div><div id="page-panic" class="page hidden"></div></div></section></div>
 <script>const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const RPC="https://rpc.testnet.near.org",NB="https://testnet.nearblocks.io";
+const RPC="https://test.rpc.fastnear.com",NB="https://testnet.nearblocks.io";
 const HUMAN={1:"Saved safely",2:"Injection stopped",3:"Swapped after signing — refused",4:"Same permit twice — refused",5:"Hold up — new receiver",6:"Panic"};
 const TABS=["setup","try","vault","policy","guard","arena","events","panic"],CRUMB={setup:"Start / <b>Set up your vault</b>",try:"Judges / <b>Try with your agent</b>",vault:"Account / <b>Vault</b>",policy:"Account / <b>Policy</b>",guard:"Security / <b>Guard</b>",arena:"Security / <b>Attack Arena</b>",events:"Security / <b>Events</b>",panic:"Security / <b>Panic</b>"};
 const cls=v=>{v=String(v||"").toUpperCase();if(/ALLOW|ONCHAIN_OK|OWNER|^OK/.test(v))return"ok";if(/WARN|WAIT|PENDING/.test(v))return"warn";if(/BLOCK|REJECT|REFUS|REVOKED|ERR|FROZEN|SKIP/.test(v))return"danger";return"mut"};
@@ -394,18 +394,21 @@ const st=()=>{try{return JSON.parse(localStorage.getItem(SK))||{}}catch{return{}
 let N,SEL;const near=async()=>N||(N=await import("https://esm.sh/near-api-js@4.0.4"));
 const yo=n=>{const[i,f=""]=String(n).trim().split(".");return BigInt(i+(f+"0".repeat(24)).slice(0,24)).toString()};
 const sel=async()=>SEL||(SEL=(async()=>{const[c,m,h]=await Promise.all(["core","meteor-wallet","here-wallet"].map(x=>import("https://esm.sh/@near-wallet-selector/"+x+"@8.10.2?bundle")));
- return c.setupWalletSelector({network:"testnet",modules:[m.setupMeteorWallet(),h.setupHereWallet()]})})());
+ return c.setupWalletSelector({network:{networkId:"testnet",nodeUrl:"https://test.rpc.fastnear.com",helperUrl:"https://helper.testnet.near.org",explorerUrl:"https://testnet.nearblocks.io",indexerUrl:"https://testnet-api.kitwallet.app"},modules:[m.setupMeteorWallet(),h.setupHereWallet()]})})());
 let SELR=null,WL={};sel().then(async x=>{SELR=x;for(const id of["meteor-wallet","here-wallet"])try{WL[id]=await x.wallet(id)}catch(e){console.warn("wallet preload",id,e)}}).catch(e=>console.error("wallet-selector load failed",e));
 const isSel=()=>{const w=st().wallet;return w==="meteor-wallet"||w==="here-wallet"};
 const selTx=async acts=>{const w=await (await sel()).wallet(st().wallet);const r=await w.signAndSendTransaction({signerId:st().owner,receiverId:st().vault,actions:acts.map(([m,a])=>({type:"FunctionCall",params:{methodName:m,args:a,gas:"30000000000000",deposit:"0"}}))});return r?.transaction?.hash||r?.transaction_outcome?.id||""};
 async function pick(id){put({wallet:id});if(id==="mnw")return API.onConnect();say("Opening "+(id==="meteor-wallet"?"Meteor":"HERE")+" wallet… (allow pop-ups)","connect");
- try{const w=WL[id]||await (await sel()).wallet(id);const a=await w.signIn({contractId:"guest-book.testnet",methodNames:[]});const acc=(a&&a[0]&&a[0].accountId)||((await w.getAccounts())[0]||{}).accountId;
+ try{const w=WL[id]||await (await sel()).wallet(id);const a=await TO(w.signIn({contractId:"guest-book.testnet",methodNames:[]}),120000,"no response from wallet — check pop-up blocker / Meteor extension is on testnet");const acc=(a&&a[0]&&a[0].accountId)||((await w.getAccounts())[0]||{}).accountId;
   if(!acc)throw Error("no account returned");put({owner:acc});API.setAccount(acc);say("Connected <b>"+acc+"</b> via "+id.replace("-"," "),"connect");setTimeout(()=>API.go(st().vault?"agent":"create"),800)}catch(e){say("Wallet connect failed: "+esc(e.message||e),"connect")}}
-document.querySelectorAll("#setup-wallets [data-w]").forEach(b=>b.onclick=()=>pick(b.dataset.w));
+const TO=(p,ms,m)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(Error(m)),ms))]);
+document.querySelectorAll("#setup-wallets [data-w]").forEach(b=>{if(b.dataset.w!=="mnw"){b.disabled=true;b.dataset.l=b.textContent;b.textContent+=" (loading…)"}b.onclick=()=>pick(b.dataset.w)});
+const rdy=()=>document.querySelectorAll("#setup-wallets [data-w]").forEach(b=>{if(b.dataset.l){b.disabled=false;b.textContent=b.dataset.l}});
+TO(sel(),15000,"wallet loader timed out").then(async x=>{for(const id of["meteor-wallet","here-wallet"])try{WL[id]=WL[id]||await TO(x.wallet(id),10000,id+" timed out")}catch(e){}rdy()}).catch(e=>{rdy();say("Wallet loader failed: "+esc(e.message||e)+" — use MyNearWallet or reload.","connect")});
 const back=s=>location.origin+"/?step="+s+"#setup";
 $g("setup-banner")?.remove();
 async function owner(){const s=st(),n=await near(),ks=new n.keyStores.InMemoryKeyStore();await ks.setKey("testnet",s.owner,n.KeyPair.fromString(s.session));
- return (await n.connect({networkId:"testnet",nodeUrl:"https://rpc.testnet.near.org",keyStore:ks})).account(s.owner)}
+ return (await n.connect({networkId:"testnet",nodeUrl:"https://test.rpc.fastnear.com",keyStore:ks})).account(s.owner)}
 const fc=async(m,a)=>{const r=await (await owner()).functionCall({contractId:st().vault,methodName:m,args:a,gas:30000000000000n,attachedDeposit:0n});return r.transaction.hash};
 async function authorize(step){const n=await near(),k=n.KeyPair.fromRandom("ed25519");put({session:k.toString(),sessionFor:st().vault,resume:step});
  location.href=`${W}/login/?contract_id=${st().vault}&public_key=${k.getPublicKey()}&success_url=${encodeURIComponent(back(step))}&failure_url=${encodeURIComponent(back(step))}`}
