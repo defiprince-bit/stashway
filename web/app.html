@@ -290,7 +290,7 @@ const call=(V,who,m,a)=>`near contract call-function as-transaction ${V} ${m} js
 window.copy=id=>navigator.clipboard?.writeText($(id).textContent);
 const head=(t,s)=>`<div class="page-head"><div class="page-title">${t}</div><div class="page-sub">${s}</div></div>`;
 function show(k){TABS.forEach(t=>$("page-"+t).classList.toggle("hidden",t!==k));document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("active",a.dataset.nav===k));$("crumb").innerHTML=CRUMB[k];$("sb").classList.remove("open");$("sbb").classList.remove("open")}
-addEventListener("hashchange",()=>show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"vault"));
+addEventListener("hashchange",()=>{let h=location.hash.slice(1);if(h==="start")h="setup";show(TABS.includes(h)?h:"setup");});
 $("theme").onclick=()=>{const t=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("sw-theme",t)}catch{}};
 $("menu").onclick=()=>{$("sb").classList.toggle("open");$("sbb").classList.toggle("open")};$("sbb").onclick=()=>{$("sb").classList.remove("open");$("sbb").classList.remove("open")};
 const rpc=async(m,p)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),2000);try{return (await (await fetch(RPC,{method:"POST",signal:c.signal,headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:m,params:p})})).json()).result}finally{clearTimeout(t)}};
@@ -332,7 +332,7 @@ ${esc(call(V,O,"set_agent",{agent:null,agent_key:"ed25519:NEW_PK"}))}</pre><div 
  const tr=async b=>{$("tout").textContent="running… (signing on testnet)";$("tsum").innerHTML="";try{const r=await fetch(API,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b)}),o=await r.json();$("tsum").innerHTML=(o.steps||[]).map(s=>`${chip(s.decision)} ${chip(s.result)} ${s.error?`<code>${esc(s.error)}</code>`:""} ${link(s)}`).join(" → ")||esc(o.error);$("tout").textContent=JSON.stringify(o,null,1)}catch(e){$("tout").textContent=String(e)}};
  $("tgo").onclick=()=>tr({text:$("tq").value});document.querySelectorAll("#page-try [data-p]").forEach(b=>b.onclick=()=>tr(JSON.parse(b.dataset.p)));
  renderVault(d,null);renderPolicy(null,[d.owner]);
- show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"vault");
+ {let h=location.hash.slice(1);if(h==="start")h="setup";show(TABS.includes(h)?h:"setup");}
  // background live refresh (2s timeout each, never blocks paint)
  Promise.allSettled([view(V,"get_policy"),view(V,"get_allowlist"),rpc("query",{request_type:"view_account",finality:"final",account_id:V})]).then(([p,a,ac])=>{
   if(ac.value)renderVault(d,ac.value);if(p.value)renderPolicy(p.value,a.value||[d.owner]);$("live").textContent=p.value?"testnet · live":"testnet · snapshot (RPC slow)"});
@@ -368,9 +368,9 @@ ${esc(call(V,O,"set_agent",{agent:null,agent_key:"ed25519:NEW_PK"}))}</pre><div 
 <script>(function(){var K="stashway-welcome-v1",W=document.getElementById("welcome");
 function seen(){try{return localStorage.getItem(K)}catch(e){return 1}}
 window.openWelcome=function(){W.classList.remove("hidden")};
-window.closeWelcome=function(h){try{localStorage.setItem(K,"1")}catch(e){}W.classList.add("hidden");h=h||"vault";if(location.hash!=="#"+h)location.hash=h;else if(window.show)show(h)};
-W.addEventListener("click",function(e){var a=e.target.closest("[data-wgo]");if(a){e.preventDefault();closeWelcome(a.dataset.wgo)}else if(e.target===W)closeWelcome("vault")});
-addEventListener("keydown",function(e){if(e.key==="Escape"&&!W.classList.contains("hidden"))closeWelcome("vault")});
+window.closeWelcome=function(h){try{localStorage.setItem(K,"1")}catch(e){}W.classList.add("hidden");h=h||"setup";if(location.hash!=="#"+h)location.hash=h;else if(window.show)show(h)};
+W.addEventListener("click",function(e){var a=e.target.closest("[data-wgo]");if(a){e.preventDefault();closeWelcome(a.dataset.wgo)}else if(e.target===W)closeWelcome("setup")});
+addEventListener("keydown",function(e){if(e.key==="Escape"&&!W.classList.contains("hidden"))closeWelcome("setup")});
 document.querySelectorAll("[data-start]").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();openWelcome()})});
 var h=location.hash.slice(1);if(!seen()&&(h===""||h==="vault"))openWelcome();})();</script>
 <script>(function(){var S=["connect","create","agent","rules","done"],cur="connect",done={};
