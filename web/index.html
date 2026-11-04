@@ -55,14 +55,14 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
-    font: 12.5px/1.45 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font: 14px/1.45 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
   }
   .app { display: flex; min-height: 100vh; }
   .sidebar {
-    width: 196px; flex-shrink: 0;
+    width: 220px; flex-shrink: 0;
     background: var(--bg-sidebar);
     border-right: 1px solid var(--border);
     padding: 12px 10px;
@@ -73,38 +73,38 @@
     padding: 4px 8px 14px;
   }
   .brand-mark {
-    width: 18px; height: 18px;
+    width: 22px; height: 22px;
     background: var(--mark) center/contain no-repeat;
     flex-shrink: 0;
   }
-  .brand-name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand-name { font-size: 15px; font-weight: 600; letter-spacing: -0.015em; }
   .nav-item {
     display: flex; align-items: center; gap: 8px;
-    padding: 6px 8px; border-radius: 6px;
-    color: var(--text-2); font-size: 12.5px; font-weight: 500;
+    padding: 8px 10px; border-radius: 6px;
+    color: var(--text-2); font-size: 14px; font-weight: 500;
     text-decoration: none;
   }
-  .nav-item svg { width: 14px; height: 14px; opacity: .85; flex-shrink: 0; }
+  .nav-item svg { width: 16px; height: 16px; opacity: .85; flex-shrink: 0; }
   .nav-item.active { background: var(--bg-hover); color: var(--text); }
   .nav-item:hover { color: var(--text); background: var(--bg-hover); }
   .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
   .topbar {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 20px 0; min-height: 36px;
+    padding: 14px 28px 0; min-height: 36px;
   }
-  .crumb { color: var(--text-3); font-size: 11.5px; }
+  .crumb { color: var(--text-3); font-size: 13px; }
   .crumb b { color: var(--text-2); font-weight: 500; }
   .top-actions { display: flex; gap: 8px; }
   .btn {
-    height: 28px; padding: 0 10px; border-radius: 6px;
+    height: 34px; padding: 0 14px; border-radius: 6px;
     border: 1px solid var(--border); background: transparent;
-    color: var(--text); font-size: 12px; font-weight: 500;
+    color: var(--text); font-size: 13px; font-weight: 500;
     display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
   }
-  .btn .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--bg-hover); border: 1px solid var(--border); }
-  .content { padding: 10px 20px 28px; flex: 1; max-width: 1100px; width:100%; }
+  .btn .dot { width: 16px; height: 16px; border-radius: 50%; background: var(--bg-hover); border: 1px solid var(--border); }
+  .content { padding: 16px 28px 32px; flex: 1; max-width: 1100px; width:100%; }
   .page-head { margin-bottom: 12px; }
-  .page-title { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+  .page-title { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; }
   .page-sub { margin-top: 2px; font-size: 12px; color: var(--text-2); }
   .panel {
     background: var(--bg-elev);
@@ -114,18 +114,18 @@
   }
   .row {
     display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; padding: 10px 14px;
+    gap: 16px; padding: 14px 18px;
     border-bottom: 1px solid var(--border);
-    min-height: 48px;
+    min-height: 58px;
   }
   .row:last-child { border-bottom: none; }
   .row-main { min-width: 0; }
-  .row-title { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
-  .row-meta { margin-top: 1px; font-size: 11.5px; color: var(--text-2); }
-  .row-code { font-size: 10.5px; color: var(--text-3); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; margin-top: 1px; }
+  .row-title { font-size: 15px; font-weight: 600; letter-spacing: -0.015em; }
+  .row-meta { margin-top: 1px; font-size: 13px; color: var(--text-2); }
+  .row-code { font-size: 12px; color: var(--text-3); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; margin-top: 1px; }
   .chip {
-    flex-shrink: 0; height: 22px; padding: 0 8px; border-radius: 999px;
-    font-size: 11px; font-weight: 600; display: inline-flex; align-items: center;
+    flex-shrink: 0; height: 26px; padding: 0 10px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center;
   }
   .chip.ok { background: var(--mint); color: var(--chip-fg-ok); }
   .chip.danger { background: var(--danger); color: var(--chip-fg-danger); }
@@ -134,9 +134,9 @@
   /* Vault */
   .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
   .metric { padding: 12px 14px; }
-  .metric-label { font-size: 11.5px; color: var(--text-2); margin-bottom: 4px; }
-  .metric-value { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; display: flex; align-items: baseline; gap: 8px; }
-  .metric-value span.unit { font-size: 12px; font-weight: 500; color: var(--text-2); }
+  .metric-label { font-size: 13px; color: var(--text-2); margin-bottom: 4px; }
+  .metric-value { font-size: 26px; font-weight: 650; letter-spacing: -0.02em; display: flex; align-items: baseline; gap: 8px; }
+  .metric-value span.unit { font-size: 13px; font-weight: 500; color: var(--text-2); }
   .badge-mini {
     font-size: 10px; font-weight: 600; height: 18px; padding: 0 6px;
     border-radius: 999px; background: var(--ok-bg); color: var(--mint);
@@ -148,7 +148,7 @@
     padding: 12px 14px 8px; margin-bottom: 10px; height: 168px;
     display: flex; flex-direction: column;
   }
-  .chart-title { font-size: 12.5px; font-weight: 600; margin-bottom: 8px; }
+  .chart-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
   .chart svg { flex: 1; width: 100%; }
   .hidden { display: none !important; }
 
@@ -179,7 +179,7 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
     box-shadow: inset 0 0 0 1px rgba(31,158,108,.22);
   }
   .page-title {
-    font-size: 22px; font-weight: 700; letter-spacing: -0.03em;
+    font-size: 28px; font-weight: 700; letter-spacing: -0.03em;
   }
   .btn-primary, .btn.primary {
     background: #fff; color: #0a0a0a; border-color: #fff;
@@ -211,7 +211,7 @@ const call=(V,who,m,a)=>`near contract call-function as-transaction ${V} ${m} js
 window.copy=id=>navigator.clipboard?.writeText($(id).textContent);
 const head=(t,s)=>`<div class="page-head"><div class="page-title">${t}</div><div class="page-sub">${s}</div></div>`;
 function show(k){TABS.forEach(t=>$("page-"+t).classList.toggle("hidden",t!==k));document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("active",a.dataset.nav===k));$("crumb").innerHTML=CRUMB[k];$("sb").classList.remove("open")}
-addEventListener("hashchange",()=>show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"arena"));
+addEventListener("hashchange",()=>show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"vault"));
 $("theme").onclick=()=>{const t=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("sw-theme",t)}catch{}};
 $("menu").onclick=()=>$("sb").classList.toggle("open");
 const rpc=async(m,p)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),2000);try{return (await (await fetch(RPC,{method:"POST",signal:c.signal,headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:m,params:p})})).json()).result}finally{clearTimeout(t)}};
@@ -253,7 +253,7 @@ ${esc(call(V,O,"set_agent",{agent:null,agent_key:"ed25519:NEW_PK"}))}</pre><div 
  const tr=async b=>{$("tout").textContent="running… (signing on testnet)";$("tsum").innerHTML="";try{const r=await fetch(API,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b)}),o=await r.json();$("tsum").innerHTML=(o.steps||[]).map(s=>`${chip(s.decision)} ${chip(s.result)} ${s.error?`<code>${esc(s.error)}</code>`:""} ${link(s)}`).join(" → ")||esc(o.error);$("tout").textContent=JSON.stringify(o,null,1)}catch(e){$("tout").textContent=String(e)}};
  $("tgo").onclick=()=>tr({text:$("tq").value});document.querySelectorAll("#page-try [data-p]").forEach(b=>b.onclick=()=>tr(JSON.parse(b.dataset.p)));
  renderVault(d,null);renderPolicy(null,[d.owner]);
- show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"arena");
+ show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"vault");
  // background live refresh (2s timeout each, never blocks paint)
  Promise.allSettled([view(V,"get_policy"),view(V,"get_allowlist"),rpc("query",{request_type:"view_account",finality:"final",account_id:V})]).then(([p,a,ac])=>{
   if(ac.value)renderVault(d,ac.value);if(p.value)renderPolicy(p.value,a.value||[d.owner]);$("live").textContent=p.value?"testnet · live":"testnet · snapshot (RPC slow)"});
