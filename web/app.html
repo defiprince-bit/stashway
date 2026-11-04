@@ -164,8 +164,6 @@ label{font-size:11px;color:var(--text-2);display:block;margin:6px 0 3px}.grid2{d
 .chip.mut{background:var(--bg-hover);color:var(--text-2)}.steps{padding:0 14px 10px;font-size:11.5px;color:var(--text-2)}.steps div{padding:3px 0}
 details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:none}details summary{cursor:pointer;list-style:none}details summary.row{border-bottom:none}details summary::-webkit-details-marker{display:none}
 .live{font-size:10.5px;color:var(--text-3)}#hold{position:relative;overflow:hidden;height:36px;padding:0 16px}#hold i{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(0,0,0,.25)}#hold span{position:relative}
-.menu{display:none}
-@media(max-width:760px){.sidebar{position:fixed;z-index:9;left:0;transform:translateX(-100%);transition:.15s}.sidebar.open{transform:none}.menu{display:inline-flex}.metrics{grid-template-columns:1fr}.grid2,.kv{grid-template-columns:1fr}.content,.topbar{padding-left:12px;padding-right:12px}.row{flex-wrap:wrap}}
 
   body { background-image: var(--glow, none); background-attachment: fixed; }
   .brand-name { letter-spacing: -0.02em; }
@@ -192,9 +190,30 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
   .panel { border-radius: 12px; background: var(--bg-elev); }
   .chip.ok { background: var(--mint); }
   .chip { border-radius: 999px; }
+
+.menu{display:none;min-width:44px;justify-content:center;font-size:18px}
+.sb-backdrop{display:none}
+@media(max-width:760px){
+  .app{width:100%!important;height:auto!important;min-height:100vh;overflow:visible!important}
+  .sidebar{position:fixed!important;top:0;left:0;height:100vh!important;width:260px!important;z-index:20;transform:translateX(-100%);transition:transform .18s ease}
+  .sidebar.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.5)}
+  .sb-backdrop.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:15}
+  .nav-item{min-height:44px}
+  .main{width:100%;min-width:0}
+  .menu{display:inline-flex}
+  .topbar{position:sticky;top:0;z-index:10;background:var(--bg);padding:10px 14px!important;border-bottom:1px solid var(--border);gap:8px}
+  .top-actions .btn:not(.menu){height:36px;padding:0 10px;font-size:12px}
+  .btn{min-height:40px}
+  .content{padding:14px!important;overflow:visible!important}
+  .page-title{font-size:24px!important}
+  .metrics,.grid2,.kv{grid-template-columns:1fr!important}
+  .row{flex-wrap:wrap;gap:8px}
+  .row-main{min-width:0;word-break:break-all}
+  input,select,textarea{font-size:16px!important}
+}
 </style></head>
 <body><div class="app">
-<aside class="sidebar" id="sb"><div class="brand"><div class="brand-mark" aria-hidden="true"></div><div class="brand-name">Stashway</div></div><a class="nav-item" data-nav="try" href="#try"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 5l11 7-11 7V5Z"/></svg>Try</a><a class="nav-item" data-nav="vault" href="#vault"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z"/></svg>Vault</a><a class="nav-item" data-nav="policy" href="#policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>Policy</a><a class="nav-item" data-nav="guard" href="#guard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 5 3.2 8.4 7 9.5 3.8-1.1 7-4.5 7-9.5V6l-7-3Z"/></svg>Guard</a><a class="nav-item" data-nav="arena" href="#arena"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>Arena</a><a class="nav-item" data-nav="events" href="#events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5h14v14H5V5Z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Events</a><a class="nav-item" data-nav="panic" href="#panic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16.5h.01"/></svg>Panic</a>
+<div class="sb-backdrop" id="sbb"></div><aside class="sidebar" id="sb"><div class="brand"><div class="brand-mark" aria-hidden="true"></div><div class="brand-name">Stashway</div></div><a class="nav-item" data-nav="try" href="#try"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 5l11 7-11 7V5Z"/></svg>Try</a><a class="nav-item" data-nav="vault" href="#vault"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z"/></svg>Vault</a><a class="nav-item" data-nav="policy" href="#policy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>Policy</a><a class="nav-item" data-nav="guard" href="#guard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 5 3.2 8.4 7 9.5 3.8-1.1 7-4.5 7-9.5V6l-7-3Z"/></svg>Guard</a><a class="nav-item" data-nav="arena" href="#arena"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>Arena</a><a class="nav-item" data-nav="events" href="#events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 5h14v14H5V5Z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Events</a><a class="nav-item" data-nav="panic" href="#panic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16.5h.01"/></svg>Panic</a>
 <div style="flex:1"></div></aside>
 <section class="main"><div class="topbar"><div style="display:flex;gap:8px;align-items:center"><button class="btn menu" id="menu">☰</button><div class="crumb" id="crumb"></div></div>
 <div class="top-actions"><span class="live" id="live" style="align-self:center">testnet · snapshot</span><button class="btn" id="theme">◐ Theme</button></div></div>
@@ -210,10 +229,10 @@ const yN=y=>{try{return (Number(BigInt(y)/10n**18n)/1e6).toString()}catch{return
 const call=(V,who,m,a)=>`near contract call-function as-transaction ${V} ${m} json-args '${JSON.stringify(a)}' prepaid-gas '30 Tgas' attached-deposit '0 NEAR' sign-as ${who} network-config testnet sign-with-legacy-keychain send`;
 window.copy=id=>navigator.clipboard?.writeText($(id).textContent);
 const head=(t,s)=>`<div class="page-head"><div class="page-title">${t}</div><div class="page-sub">${s}</div></div>`;
-function show(k){TABS.forEach(t=>$("page-"+t).classList.toggle("hidden",t!==k));document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("active",a.dataset.nav===k));$("crumb").innerHTML=CRUMB[k];$("sb").classList.remove("open")}
+function show(k){TABS.forEach(t=>$("page-"+t).classList.toggle("hidden",t!==k));document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("active",a.dataset.nav===k));$("crumb").innerHTML=CRUMB[k];$("sb").classList.remove("open");$("sbb").classList.remove("open")}
 addEventListener("hashchange",()=>show(TABS.includes(location.hash.slice(1))?location.hash.slice(1):"vault"));
 $("theme").onclick=()=>{const t=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("sw-theme",t)}catch{}};
-$("menu").onclick=()=>$("sb").classList.toggle("open");
+$("menu").onclick=()=>{$("sb").classList.toggle("open");$("sbb").classList.toggle("open")};$("sbb").onclick=()=>{$("sb").classList.remove("open");$("sbb").classList.remove("open")};
 const rpc=async(m,p)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),2000);try{return (await (await fetch(RPC,{method:"POST",signal:c.signal,headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:m,params:p})})).json()).result}finally{clearTimeout(t)}};
 const view=async(c,m)=>{const r=await rpc("query",{request_type:"call_function",finality:"final",account_id:c,method_name:m,args_base64:btoa("{}")});return JSON.parse(new TextDecoder().decode(new Uint8Array(r.result)))};
 const kv=o=>`<div class="panel kv">${Object.entries(o).map(([k,v])=>`<div>${esc(k)}</div><div class="mono">${esc(typeof v==="object"?JSON.stringify(v):(/cap|limit|spent/.test(k)&&/^\d{19,}$/.test(v)?yN(v)+" NEAR":v))}</div>`).join("")}</div>`;
