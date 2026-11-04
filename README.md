@@ -4,6 +4,19 @@
 
 **The AI suggests, the Guard checks, the contract decides.** Built at NEAR HACKATHON, track: AI Security & Defense. **Testnet only.**
 
+## Live
+- **Attack Arena (live UI):** https://stashway-arena.vercel.app
+- **Vault (NEAR testnet):** [stashway-v2-8201.testnet](https://testnet.nearblocks.io/address/stashway-v2-8201.testnet)
+- **Repo:** https://github.com/defiprince-bit/stashway
+
+## Clone & run
+```bash
+git clone https://github.com/defiprince-bit/stashway && cd stashway
+python3 -m http.server -d web 8787   # open http://localhost:8787 — reads web/results.json + live testnet RPC
+# re-run attacks (needs your own testnet owner/agent keys in .env.testnet — never committed):
+node arena/run.mjs && scripts/panic-demo.sh
+```
+
 ## Why
 Giving an AI agent a wallet usually means giving it the keys. Stashway gives the agent a **function-call access key** that can call only `agent_transfer`. Every transfer then needs two things:
 1. A **signed Guard Permit**. A deterministic Counterparty Guard (no AI) scores the receiver ALLOW / WARN / BLOCK and signs an ed25519 permit, only on ALLOW. The permit binds `vault|agent|receiver|amount|nonce|expiry` (intent locking).

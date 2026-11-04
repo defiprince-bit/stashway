@@ -3,21 +3,22 @@
 <style>
 :root{--bg:#070b16;--glass:rgba(22,32,56,.55);--line:rgba(126,240,193,.14);--mint:#7ef0c1;--amber:#f5d06b;--red:#ff6b81;--mut:#8a98b3;--txt:#e9f0fa}
 *{box-sizing:border-box}body{margin:0;font:15px/1.5 Inter,system-ui,sans-serif;color:var(--txt);min-height:100vh;
-background:radial-gradient(900px 500px at 10% -10%,rgba(126,240,193,.13),transparent 60%),radial-gradient(800px 500px at 100% 0,rgba(120,110,255,.14),transparent 60%),var(--bg)}
+background:var(--bg)}
 header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 24px;backdrop-filter:blur(14px);background:rgba(7,11,22,.7);border-bottom:1px solid var(--line)}
-header img{width:38px;height:38px;border-radius:10px;box-shadow:0 0 18px rgba(126,240,193,.35)}header b{font-size:18px;letter-spacing:.3px}
+header img{width:38px;height:38px;border-radius:10px}header b{font-size:18px;letter-spacing:.3px}
 nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}nav a{color:var(--mut);padding:6px 12px;border-radius:999px;cursor:pointer;text-decoration:none}
-nav a.on{color:var(--bg);background:var(--mint);box-shadow:0 0 16px rgba(126,240,193,.5)}nav a[data-t=Panic]{color:var(--red)}nav a[data-t=Panic].on{background:var(--red);color:#fff;box-shadow:0 0 16px rgba(255,107,129,.6)}
+nav a.on{color:var(--bg);background:var(--mint)}nav a[data-t=Panic]{color:var(--red)}nav a[data-t=Panic].on{background:var(--red);color:#fff}
 main{max-width:1020px;margin:0 auto;padding:24px}section{display:none}section.on{display:block;animation:f .25s}@keyframes f{from{opacity:0;transform:translateY(6px)}}
-.card{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:14px 0;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.card{background:transparent;border:0;border-top:1px solid #1f2b47;border-radius:0;padding:18px 4px;margin:0}
+.hl{font:italic 400 22px/1.3 Georgia,"Times New Roman",serif;margin:.1em 0 .3em}.fn{font:11px ui-monospace,monospace;color:var(--mut)}
 h2,h3{margin:.1em 0 .4em}h3 .n{color:var(--mint);margin-right:6px}
 .b{display:inline-block;padding:2px 9px;border-radius:999px;font:600 11.5px/1.6 ui-monospace,monospace;letter-spacing:.3px;border:1px solid}
-.ALLOW,.ONCHAIN_OK,.OWNER{color:var(--mint);border-color:rgba(126,240,193,.5);background:rgba(126,240,193,.08);box-shadow:0 0 10px rgba(126,240,193,.2)}
+.ALLOW,.ONCHAIN_OK,.OWNER{color:var(--mint);border-color:rgba(126,240,193,.5);background:rgba(126,240,193,.08)}
 .WARN,.WAITING_OWNER_CONFIRM{color:var(--amber);border-color:rgba(245,208,107,.5);background:rgba(245,208,107,.08)}
-.BLOCK,.ONCHAIN_REJECT,.OFFCHAIN_REFUSAL,.KEY_REVOKED{color:var(--red);border-color:rgba(255,107,129,.5);background:rgba(255,107,129,.08);box-shadow:0 0 10px rgba(255,107,129,.2)}
+.BLOCK,.ONCHAIN_REJECT,.OFFCHAIN_REFUSAL,.KEY_REVOKED{color:var(--red);border-color:rgba(255,107,129,.5);background:rgba(255,107,129,.08)}
 .x,.SKIPPED{color:var(--mut);border-color:#2a3654}.pm{font:12px ui-monospace,monospace;color:#b9c7dc;background:#0d1426;border:1px solid #22304e;border-radius:6px;padding:1px 7px}
 .step{display:grid;grid-template-columns:18px 1fr;gap:10px;padding:8px 0;border-top:1px dashed #1f2b47}.step:first-of-type{border-top:0}
-.dot{width:12px;height:12px;border-radius:50%;margin-top:5px;background:var(--mut)}.dot.ok{background:var(--mint);box-shadow:0 0 10px var(--mint)}.dot.bad{background:var(--red);box-shadow:0 0 10px var(--red)}.dot.warn{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.dot{width:12px;height:12px;border-radius:50%;margin-top:5px;background:var(--mut)}.dot.ok{background:var(--mint)}.dot.bad{background:var(--red)}.dot.warn{background:var(--amber)}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px}
 a{color:var(--mint)}code{color:#b9c7dc;font-size:13px}small,.mut{color:var(--mut)}.pill{font-size:12px;color:var(--mut)}
 .ev{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:8px 0}.ev div{background:#0d1426;border:1px solid #1f2b47;border-radius:10px;padding:8px}.ev b{display:block;font:13px ui-monospace,monospace;word-break:break-all}
@@ -28,7 +29,7 @@ input{width:100%;background:#050912;border:1px solid #22304e;color:var(--txt);bo
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}@media(max-width:700px){.grid2{grid-template-columns:1fr}}
 #hold{position:relative;overflow:hidden;width:100%;padding:22px;font-size:18px;letter-spacing:2px;background:rgba(255,107,129,.12);color:var(--red);border:1px solid var(--red);border-radius:14px;user-select:none}
 #hold i{position:absolute;inset:0;width:0;background:rgba(255,107,129,.35);transition:none}#hold span{position:relative}
-.warnbox{border-color:rgba(245,208,107,.45);box-shadow:0 0 24px rgba(245,208,107,.12)}.panicbox{border-color:rgba(255,107,129,.45);box-shadow:0 0 24px rgba(255,107,129,.12)}
+.warnbox{border-color:rgba(245,208,107,.45)}.panicbox{border-color:rgba(255,107,129,.45)}
 details summary{cursor:pointer;color:var(--mut);font-size:12px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--mint);color:var(--bg);padding:8px 16px;border-radius:999px;font-weight:600;display:none}
 </style></head><body>
@@ -50,6 +51,7 @@ const chip=s=>s?`<span class="b ${cls(s)}">${esc(s)}</span>`:"";
 const link=s=>s.url?`<a href="${s.url}" target=_blank>${s.tx.slice(0,10)}… on nearblocks ↗</a>`:`<small>no tx (by design)</small>`;
 const dot=s=>/REJECT|REFUSAL|REVOKED|ERROR/.test(s.result)?"bad":/WAIT/.test(s.result)?"warn":/OK/.test(s.result)?"ok":"";
 const evid=e=>e?`<div class=ev>${Object.entries(e).map(([k,v])=>`<div><small>${k}</small><b>${esc(v)}</b></div>`).join("")}</div>`:"";
+const HUMAN={1:"Saved safely",2:"Injection stopped",3:"Swapped after signing — refused",4:"Same permit twice — refused",5:"Hold up — new receiver",6:"Panic"};
 const call=(V,who,m,a)=>`near contract call-function as-transaction ${V} ${m} json-args '${JSON.stringify(a)}' prepaid-gas '30 Tgas' attached-deposit '0 NEAR' sign-as ${who} network-config testnet sign-with-legacy-keychain send`;
 (async()=>{
  const d=await (await fetch("results.json")).json(),V=d.vault,O=d.owner;
@@ -68,7 +70,7 @@ const call=(V,who,m,a)=>`near contract call-function as-transaction ${V} ${m} js
  const oc=()=>{const g=k=>$("oc_"+k).value.trim();try{$("oc_h").value=near(g("amount"))}catch{}$("occmd").textContent=call(V,O,"owner_confirm",{agent:g("agent"),receiver:g("receiver"),amount:g("amount"),nonce:g("nonce"),expiry:g("expiry")})};
  document.querySelectorAll("[id^=oc_]").forEach(i=>i.oninput=oc);oc();
  // Arena
- $("Arena").innerHTML=`<p><small>Recorded ${d.generated}${d.panic_generated?` · panic ${d.panic_generated}`:""} on ${d.network}. Re-run 1–5: <code>node arena/run.mjs</code> · panic (film last): <code>scripts/panic-demo.sh</code></small></p>`+d.results.map(r=>`<div class="card ${r.id==6?"panicbox":""}"><h3><span class=n>${r.id}</span>${esc(r.title)}</h3><small>Attack: ${esc(r.attack)}</small>${r.steps.map(s=>`<div class=step><span class="dot ${dot(s)}"></span><div>${esc(s.label)}<div class=row>${s.decision?`Guard ${chip(s.decision)}`:""} ${s.permit?`permit <span class=pm>${esc(s.permit)}</span>`:""} → ${chip(s.result)} ${s.error?`<code>${esc(s.error)}</code>`:""} · ${link(s)}</div>${s.reasons?`<small>${s.reasons.map(esc).join(" · ")}</small>`:""}</div></div>`).join("")}</div>`).join("");
+ $("Arena").innerHTML=`<p><small>Recorded ${d.generated}${d.panic_generated?` · panic ${d.panic_generated}`:""} on ${d.network}. Re-run 1–5: <code>node arena/run.mjs</code> · panic (film last): <code>scripts/panic-demo.sh</code></small></p>`+d.results.map(r=>`<div class="card ${r.id==6?"panicbox":""}"><div class=hl><span class=n style="color:var(--mut);font:13px ui-monospace,monospace;margin-right:8px">${String(r.id).padStart(2,"0")}</span>${HUMAN[r.id]||esc(r.title)}</div><div class=fn>${esc(r.title)}</div><small>Attack: ${esc(r.attack)}</small>${r.steps.map(s=>`<div class=step><span class="dot ${dot(s)}"></span><div>${esc(s.label)}<div class=row>${s.decision?`Guard ${chip(s.decision)}`:""} ${s.permit?`permit <span class=pm>${esc(s.permit)}</span>`:""} → ${chip(s.result)} · ${link(s)}</div>${s.error?`<div class=fn>¹ ${esc(s.error)}</div>`:""}${s.reasons?`<small>${s.reasons.map(esc).join(" · ")}</small>`:""}</div></div>`).join("")}</div>`).join("");
  $("Events").innerHTML=`<div class=card><h2>Security event log</h2>`+d.events.slice().reverse().map(e=>`<div class=step><span class="dot ${dot(e)}"></span><div><small>${e.ts||""}</small> ${esc(e.label)}<div class=row>${chip(e.decision)} ${chip(e.result)} → <span class=pm>${e.receiver||"—"}</span>${e.near?` ${e.near} NEAR`:""} ${e.error?`<code>${esc(e.error)}</code>`:""} ${link(e)}</div>${e.reasons||e.evidence?`<details><summary>details</summary><small>${(e.reasons||[]).map(esc).join(" · ")}</small>${evid(e.evidence)}${e.permit?`permit <span class=pm>${e.permit}</span>`:""}</details>`:""}</div></div>`).join("")+`</div>`;
  // Panic
  const p6=d.results.find(r=>r.id==6);
