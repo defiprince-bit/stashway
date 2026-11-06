@@ -79,7 +79,7 @@ go();addEventListener("hashchange",go);})();</script>
     background:
       radial-gradient(ellipse 55% 45% at 50% 42%, rgba(61,220,151,.55), transparent 70%),
       radial-gradient(ellipse 70% 55% at 50% 35%, rgba(61,220,151,.22), transparent 75%);
-    filter: blur(10px); pointer-events: none;
+    pointer-events: none;
   }
   .hero-mark {
     position: absolute; left: 50%; top: -8%; transform: translateX(-50%);
@@ -192,7 +192,8 @@ go();addEventListener("hashchange",go);})();</script>
     .btn-white, .btn-ghost, .btn-lg { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
     .hero { min-height: auto !important; padding: 340px 18px 56px !important; justify-content: flex-start !important; }
     .glow { width: 560px !important; height: 420px !important; top: 0 !important; }
-    .hero-mark { width: 300px !important; height: 300px !important; top: 56px !important; }
+    .hero-mark { width: 300px !important; height: 300px !important; top: 56px !important; filter: none !important; }
+    .cta-band .orb { width: 280px !important; height: 280px !important; filter: blur(40px) !important; }
     .hero-fade { background: linear-gradient(to bottom, transparent 30%, #000 52%) !important; }
     .headline { font-size: clamp(32px, 9vw, 44px) !important; line-height: 1.02 !important; }
     .sub { font-size: 16px !important; padding: 0 4px; }
@@ -217,43 +218,88 @@ go();addEventListener("hashchange",go);})();</script>
   .headline.typing .cursor { opacity: 1; }
   .headline.done .cursor { animation: caret-blink 1.06s steps(1) infinite; }
   @keyframes caret-blink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
+  /* perf: pulse is opacity/transform only on .glow; .hero-mark static (filter rasterized once) */
   .glow { animation: glow-pulse 3.2s ease-in-out infinite; }
   @keyframes glow-pulse {
-    0%,100% { opacity: .85; transform: translateX(-50%) scale(1); }
-    50% { opacity: 1; transform: translateX(-50%) scale(1.06); }
+    0%,100% { opacity: .7; transform: translate3d(-50%,0,0) scale(1); }
+    50% { opacity: 1; transform: translate3d(-50%,0,0) scale(1.06); }
   }
-  .hero-mark { animation: mark-pulse 3.2s ease-in-out infinite; }
-  @keyframes mark-pulse {
-    0%,100% { filter: drop-shadow(0 0 28px rgba(61,220,151,.75)) drop-shadow(0 0 90px rgba(61,220,151,.4)); }
-    50% { filter: drop-shadow(0 0 40px rgba(61,220,151,.95)) drop-shadow(0 0 130px rgba(61,220,151,.6)) brightness(1.08); }
-  }
-  .btn-lg, .btn-ghost { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease; }
+  .hero-mark { transform: translate3d(-50%,0,0); }
+  .btn-lg, .btn-ghost { transition: transform .16s ease-out, box-shadow .16s ease-out, border-color .16s ease-out, background .16s ease-out; }
   .hero .btn-lg:hover { transform: translateY(-3px); box-shadow: 0 10px 30px -8px rgba(61,220,151,.55), 0 0 0 1px rgba(61,220,151,.35); }
   .hero .btn-ghost:hover { transform: translateY(-2px); border-color: rgba(61,220,151,.55); background: rgba(61,220,151,.06); }
   .hero-chip {
     position: absolute; z-index: 2; pointer-events: none;
     font-size: 12px; font-weight: 500; color: #c9f7e2; letter-spacing: .01em;
     padding: 7px 12px; border-radius: 999px;
-    background: rgba(10,20,15,.55); border: 1px solid rgba(61,220,151,.35);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    background: rgba(10,20,15,.88); border: 1px solid rgba(61,220,151,.35);
     box-shadow: 0 0 18px -4px rgba(61,220,151,.45);
     opacity: 0; transform: translateY(8px) scale(.94);
-    transition: opacity .35s ease, transform .45s cubic-bezier(.2,.8,.2,1);
+    transition: opacity .16s ease-out, transform .18s cubic-bezier(.2,.8,.2,1);
   }
   .hero-chip::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #3DDC97; margin-right: 7px; vertical-align: 1px; box-shadow: 0 0 6px #3DDC97; }
   .hero-chip.c1 { left: calc(50% - 360px); top: 30%; }
-  .hero-chip.c2 { right: calc(50% - 360px); top: 40%; transition-delay: .08s; }
+  .hero-chip.c2 { right: calc(50% - 360px); top: 40%; transition-delay: .04s; }
+  /* shared show state (mobile JS) — opacity/transform only */
+  .hero.chips-on .hero-chip { opacity: 1; transform: translateY(0) scale(1); }
   @media (hover: hover) and (min-width: 721px) {
-    .hero:hover .hero-chip { opacity: 1; transform: translateY(0) scale(1); animation: chip-float 4s ease-in-out .5s infinite; }
+    .hero:hover .hero-chip { opacity: 1; transform: translateY(0) scale(1); }
   }
-  @keyframes chip-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-  @media (max-width: 720px) { .hero-chip { display: none; } }
+  /* mobile: chips + tappable mark; desktop hover path unchanged */
+  @media (max-width: 720px) {
+    .hero-mark {
+      pointer-events: auto;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hero-chip {
+      display: block;
+      font-size: 11px;
+      padding: 6px 10px;
+      max-width: calc(50% - 10px);
+    }
+    .hero-chip.c1 { left: 10px; right: auto; top: 168px; }
+    .hero-chip.c2 { right: 10px; left: auto; top: 214px; transition-delay: .05s; }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .glow, .hero-mark, .hero:hover .hero-chip { animation: none !important; }
+    .glow { animation: none !important; opacity: .85; }
+    .hero-chip { transition: none; }
     .headline.done .cursor { animation: caret-soft 2s ease-in-out infinite; }
     .hero .btn-lg:hover, .hero .btn-ghost:hover { transform: none; }
   }
   @keyframes caret-soft { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+
+  .live-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin: 0; padding: 6px 12px 6px 10px;
+    border-radius: 999px; font-size: 12px; font-weight: 500;
+    color: rgba(255,255,255,.9); letter-spacing: .01em;
+    background: rgba(10,20,15,.72); border: 1px solid rgba(61,220,151,.32);
+    text-decoration: none; transition: border-color .16s ease, background .16s ease;
+  }
+  .live-pill:hover { border-color: rgba(61,220,151,.55); background: rgba(10,20,15,.88); }
+  .live-pill .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #3DDC97;
+    box-shadow: 0 0 0 0 rgba(61,220,151,.55);
+    animation: live-dot 1.8s ease-out infinite;
+  }
+  @keyframes live-dot {
+    0% { box-shadow: 0 0 0 0 rgba(61,220,151,.5); }
+    70% { box-shadow: 0 0 0 8px rgba(61,220,151,0); }
+    100% { box-shadow: 0 0 0 0 rgba(61,220,151,0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .live-pill .dot { animation: none; }
+  }
+  footer .footer-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  footer .live-pill { margin-top: 0; }
+  @media (max-width: 720px) {
+    footer .footer-meta { align-items: flex-start; }
+  }
+  @media (max-width: 720px) {
+    footer .live-pill { font-size: 11px; max-width: 100%; }
+  }
 </style>
 </head>
 <body>
@@ -346,7 +392,13 @@ go();addEventListener("hashchange",go);})();</script>
 
   <footer class="wrap">
     <a class="logo" href="#top"><img src="assets/mark-mint.png" alt=""/>Stashway</a>
-    <span>© 2026 STASHWAY · NEAR HACKATHON</span>
+    <div class="footer-meta">
+      <span>© 2026 STASHWAY · NEAR HACKATHON</span>
+      <a class="live-pill" href="https://testnet.nearblocks.io/address/stashway-v2-8201.testnet" target="_blank" rel="noopener">
+        <span class="dot" aria-hidden="true"></span>
+        Live on NEAR Testnet · stashway-v2-8201.testnet
+      </a>
+    </div>
   </footer>
 <script>
 (function(){
@@ -356,9 +408,58 @@ go();addEventListener("hashchange",go);})();</script>
   t.textContent=''; h.classList.add('typing'); var i=0;
   setTimeout(function step(){
     t.textContent=word.slice(0,++i);
-    if(i<word.length) setTimeout(step, 60+Math.random()*25);
+    if(i<word.length) setTimeout(step, 55+Math.random()*15);
     else { h.classList.remove('typing'); h.classList.add('done'); }
-  }, 350);
+  }, 300);
+})();
+/* Mobile hero chips: one-time entrance + tap mark to toggle. Desktop hover untouched. */
+(function(){
+  var hero=document.querySelector('.hero');
+  var mark=document.querySelector('.hero-mark');
+  if(!hero||!mark) return;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var mobile=window.matchMedia('(max-width: 720px)');
+  var entered=false;
+  var hideTimer=0;
+  function isMobile(){ return mobile.matches; }
+  function show(on){
+    if(on) hero.classList.add('chips-on');
+    else hero.classList.remove('chips-on');
+  }
+  function clearHide(){ if(hideTimer){ clearTimeout(hideTimer); hideTimer=0; } }
+  function entrance(){
+    if(!isMobile()||entered||reduce.matches) return;
+    entered=true;
+    show(true);
+    clearHide();
+    hideTimer=setTimeout(function(){ show(false); hideTimer=0; }, 2400);
+  }
+  function onTyped(){
+    if(document.querySelector('.hero .headline.done')) entrance();
+    else setTimeout(onTyped, 120);
+  }
+  if(isMobile()){
+    mark.setAttribute('role','button');
+    mark.setAttribute('tabindex','0');
+    mark.setAttribute('aria-label','Show Stashway highlights');
+    mark.setAttribute('aria-pressed','false');
+    function toggle(){
+      if(!isMobile()) return;
+      clearHide();
+      var on=!hero.classList.contains('chips-on');
+      show(on);
+      mark.setAttribute('aria-pressed', on?'true':'false');
+      entered=true;
+    }
+    mark.addEventListener('click', function(e){ e.preventDefault(); toggle(); });
+    mark.addEventListener('keydown', function(e){
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }
+    });
+    if(!reduce.matches){
+      if(document.querySelector('.hero .headline.done')) entrance();
+      else onTyped();
+    }
+  }
 })();
 </script>
 </body>
