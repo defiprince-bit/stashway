@@ -11,8 +11,13 @@ export default async function handler(req, res) {
   const vault = `sw-${crypto.createHash("sha256").update(owner).digest("hex").slice(0, 6)}-${Date.now().toString(36)}.testnet`;
   try {
     await createViaFaucet(vault);
-    await new Promise((r) => setTimeout(r, 2500));
-    const acct = await vaultAccount(vault), g = guardPub();
+    let acct, last;
+    for (let i = 0; i < 20; i++) {
+      try { acct = await vaultAccount(vault); await acct.state(); last = null; break; }
+      catch (e) { last = e; await new Promise((r) => setTimeout(r, 250)); }
+    }
+    if (!acct) throw last || new Error("vault account not visible yet");
+    const g = guardPub();
     // set_guard / allow / set_policy are owner-only: the user's wallet signs them in Setup step 4.
     const r = await acct.signAndSendTransaction({ receiverId: vault, actions: [
       transactions.deployContract(fs.readFileSync(WASM)),

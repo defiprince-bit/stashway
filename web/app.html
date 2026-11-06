@@ -233,6 +233,11 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 .su-ld{font-size:14px;line-height:1.55;color:var(--muted,#a1a1a1);margin:0 0 20px}
 .su-ft{font-size:12px;color:var(--muted,#a1a1a1);margin-top:14px}
 .su-note{font-size:13px;color:var(--muted,#a1a1a1);margin-top:10px;min-height:1em}
+.su-note.wait{display:flex;align-items:flex-start;gap:8px;color:#3DDC97}
+.su-spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;display:inline-block;flex:none;animation:su-spin .6s linear infinite;margin-right:8px;vertical-align:-2px}
+@keyframes su-spin{to{transform:rotate(360deg)}}
+.btn.busy,.btn:disabled.busy{opacity:.9;cursor:wait}
+.su-card .btn.busy{pointer-events:none}
 .su-acct{display:none;border:1px solid var(--border,#262626);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-family:ui-monospace,monospace;font-size:13px}
 #setup-step-connect[data-connected="1"] .su-acct{display:block}
 #setup-step-connect[data-connected="1"] #setup-connect,#setup-step-connect[data-connected="1"] #setup-other-wallets{display:none}
@@ -312,8 +317,10 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 </div></div>
 <section class="su-step" id="setup-step-create"><div class="su-eb">Step 2 of 5</div><div class="su-t">Create your vault</div><p class="su-ld">Deploys the on-chain leash contract. Caps and allowlist start empty until you set them.</p>
 <div class="su-row"><button class="btn primary" id="setup-create">Create vault</button></div><div class="su-note" id="setup-create-status"></div><div class="su-ft">Vault: <span id="setup-vault" class="mono">not created yet</span></div></section>
-<section class="su-step" id="setup-step-agent"><div class="su-eb">Step 3 of 5</div><div class="su-t">Add your agent’s key</div><p class="su-ld">Download a function-call key that can only call agent_transfer — not full access.</p>
-<div class="su-row"><button class="btn" id="setup-download-key">Download key file</button><button class="btn primary" id="setup-confirm-key">I’ve added it — continue</button></div><div class="su-note" id="setup-agent-status"></div><div class="su-ft">Keep this file private. Panic deletes it on-chain later.</div></section>
+<section class="su-step" id="setup-step-agent"><div class="su-eb">Step 3 of 5</div><div class="su-t">Add your agent’s key</div><p class="su-ld">Download a new function-call key that can only call <code>agent_transfer</code>, or paste a public key you already use. Give the matching private key to your existing agent so it can talk to this vault.</p>
+<div class="su-row"><button class="btn" id="setup-download-key">Download key file</button><button class="btn primary" id="setup-confirm-key">I’ve added it — continue</button></div>
+<div class="su-f"><label for="setup-agent-pk">Existing agent public key (optional)</label><input id="setup-agent-pk" placeholder="ed25519:…" autocomplete="off" spellcheck="false"></div>
+<div class="su-note" id="setup-agent-status"></div><div class="su-ft">Keep the private key private. Panic deletes the on-chain key later.</div></section>
 <section class="su-step" id="setup-step-rules"><div class="su-eb">Step 4 of 5</div><div class="su-t">Set the rules</div><p class="su-ld">Your agent can never go past these — even if it’s tricked.</p>
 <div class="su-f"><label for="setup-cap-tx">Max per transfer (NEAR)</label><input id="setup-cap-tx" inputmode="decimal" placeholder="0.2"></div>
 <div class="su-f"><label for="setup-cap-day">Max per day (NEAR)</label><input id="setup-cap-day" inputmode="decimal" placeholder="1"></div>
@@ -511,7 +518,10 @@ const fc=async(m,a)=>{const r=await (await owner()).functionCall({contractId:st(
 async function authorize(step){const n=await near(),k=n.KeyPair.fromRandom("ed25519");put({session:k.toString(),sessionFor:st().vault,resume:step});
  location.href=walletLoginUrl({contractId:st().vault,publicKey:k.getPublicKey().toString(),successUrl:back(step),failureUrl:back(step)})}
 const nb=h=>`<a href="https://testnet.nearblocks.io/txns/${h}" target="_blank">tx ↗</a>`;
-const say=(m,s)=>{API.setStatus("",s);const e=$g({connect:"setup-connect-note",create:"setup-create-status",agent:"setup-agent-status",rules:"setup-rules-status"}[s]);if(e)e.innerHTML=m};
+const NOTE={connect:"setup-connect-note",create:"setup-create-status",agent:"setup-agent-status",rules:"setup-rules-status"};
+const ACT={connect:"setup-connect",create:"setup-create",agent:"setup-confirm-key",rules:"setup-save-rules"};
+function spinOn(s,on,label){const b=$g(ACT[s]);if(!b)return;if(!b.dataset.label)b.dataset.label=b.textContent.trim();b.disabled=!!on;b.classList.toggle("busy",!!on);b.innerHTML=on?('<i class="su-spin" aria-hidden="true"></i>'+(label||b.dataset.label)):b.dataset.label}
+const say=(m,s,wait)=>{API.setStatus("",s);const e=$g(NOTE[s]);if(e){e.classList.toggle("wait",!!wait);e.innerHTML=(wait?'<i class="su-spin" aria-hidden="true"></i>':'')+(m||"")}if(!wait)spinOn(s,false)};
 Object.assign(API,{
  async onConnect(){
   if(!st().wallet)put({wallet:"meteor"});
@@ -520,36 +530,46 @@ Object.assign(API,{
    const n=await near(),key=n.KeyPair.fromRandom("ed25519");
    // This initial limited key is separate from the vault session authorized later.
    put({connectKey:key.toString()});
+   spinOn("connect",true,"Opening wallet…");say("Opening Meteor Wallet (testnet)…","connect",true);
    location.href=walletLoginUrl({contractId:st().vault||"guest-book.testnet",publicKey:key.getPublicKey().toString(),successUrl:back("create"),failureUrl:back("connect")});
-  }catch(e){cwBusy(null);const message="Couldn’t open wallet: "+esc(e.message||e);cwErr(message);say(message,"connect")}
+  }catch(e){cwBusy(null);spinOn("connect",false);const message="Couldn’t open wallet: "+esc(e.message||e);cwErr(message);say(message,"connect")}
  },
- async onCreate(){const o=st().owner;if(!o)return API.go("connect");say("Creating your vault on testnet… (~15s)","create");
+ async onCreate(){const o=st().owner;if(!o)return API.go("connect");if($g("setup-create")?.disabled)return;
+  spinOn("create",true,"Creating vault…");say("Creating your vault on-chain… this usually takes a few seconds.","create",true);
   try{const r=await fetch("/api/provision",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({owner:o})}),text=await r.text();
    let j={};try{j=JSON.parse(text)}catch{j={error:(text||"").slice(0,200)||String(r.status)}}
    if(!r.ok){if(j.vault){put({vault:j.vault,guard_pub:j.guard_pub||st().guard_pub,agent:null,session:null});API.setVault(j.vault);
-     say(`Vault <b>${j.vault}</b> was created — continue to add your agent. `+(j.error?`<span class="live">${esc(j.error)}</span>`:""),"create");return setTimeout(()=>API.go("agent"),1200)}
+     say(`Vault <b>${j.vault}</b> was created — continue to add your agent. `+(j.error?`<span class="live">${esc(j.error)}</span>`:""),"create");return setTimeout(()=>API.go("agent"),800)}
     return say("Couldn’t create: "+(j.error||r.status),"create")}
    put({vault:j.vault,guard_pub:j.guard_pub,agent:null,session:null});API.setVault(j.vault);
-   say(`Vault <b>${j.vault}</b> is live · <a href="${j.explorer}" target="_blank">nearblocks ↗</a>`,"create");setTimeout(()=>API.go("agent"),1200)}
+   say(`Vault <b>${j.vault}</b> is live · <a href="${j.explorer}" target="_blank">nearblocks ↗</a>`,"create");setTimeout(()=>API.go("agent"),800)}
   catch(e){say("Couldn’t create: "+esc(e.message||e),"create")}},
  async onDownloadKey(){const s=st();if(!s.vault)return API.go("create");const n=await near(),k=n.KeyPair.fromRandom("ed25519");
   const pk=k.getPublicKey().toString();put({agent_pk:pk});
   const b=new Blob([JSON.stringify({account_id:s.vault,public_key:pk,private_key:k.toString(),network:"testnet",can_call:["agent_transfer"]},null,1)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="agent-key.json";a.click();say("Saved <b>agent-key.json</b> — give this file to your agent. Then press continue.","agent")},
- async onConfirmKey(){const s=st();if(!s.agent_pk)return say("Download the key file first.","agent");
-  if(!s.agentAdded){say("Adding the agent key to your vault…","agent");const r=await fetch("/api/agent-key",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({vault:s.vault,owner:s.owner,agent_pk:s.agent_pk})}),j=await r.json();
+ async onConfirmKey(){const pasted=($g("setup-agent-pk")?.value||"").trim();
+  if(pasted){if(!/^ed25519:[1-9A-HJ-NP-Za-km-z]{43,44}$/.test(pasted))return say("That doesn’t look like an ed25519 public key.","agent");put({agent_pk:pasted})}
+  const s=st();if(!s.agent_pk)return say("Download a new key file, or paste your existing public key.","agent");
+  if($g("setup-confirm-key")?.disabled)return;
+  spinOn("agent",true,"Working…");
+  try{
+  if(!s.agentAdded){say("Adding the agent key to your vault…","agent",true);const r=await fetch("/api/agent-key",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({vault:s.vault,owner:s.owner,agent_pk:s.agent_pk})}),j=await r.json();
    if(!r.ok)return say("Couldn’t add key: "+(j.error||r.status),"agent");put({agentAdded:1})}
-  if(!isSel()&&(!s.session||s.sessionFor!==s.vault)){say("Approve Stashway in your wallet (one time)…","agent");return authorize("agent")}
-  try{say("Registering your agent on the vault… (approve in wallet)","agent");const h=isSel()?await selTx([["set_agent",{agent:null,agent_key:s.agent_pk}]]):await fc("set_agent",{agent:null,agent_key:s.agent_pk});say("Agent registered "+nb(h),"agent");setTimeout(()=>API.go("rules"),1000)}catch(e){say("Wallet call failed: "+esc(e.message),"agent")}},
+  if(!isSel()&&(!s.session||s.sessionFor!==s.vault)){spinOn("agent",true,"Opening wallet…");say("Approve Stashway in your wallet (one time)…","agent",true);return authorize("agent")}
+  say("Registering your agent on the vault… approve in your wallet if asked.","agent",true);const h=isSel()?await selTx([["set_agent",{agent:null,agent_key:s.agent_pk}]]):await fc("set_agent",{agent:null,agent_key:s.agent_pk});say("Agent registered "+nb(h),"agent");setTimeout(()=>API.go("rules"),800)}
+  catch(e){say("Wallet call failed: "+esc(e.message),"agent")}},
  async onSaveRules(){const s=st(),tx=$g("setup-cap-tx").value||"0.2",day=$g("setup-cap-day").value||"1";
   const list=$g("setup-allowlist").value.split(/[\s,]+/).map(x=>x.trim().toLowerCase()).filter(Boolean);
-  if(isSel()){try{say("Approve one transaction in your wallet…","rules");const h=await selTx([["set_guard",{guard_pk:s.guard_pub}],["set_policy",{per_tx_cap:yo(tx),daily_cap:yo(day)}],...list.map(r=>["allow",{receiver:r}])]);
-   say(`Rules saved: ${tx} NEAR/transfer · ${day} NEAR/day · ${list.length} receiver(s) ${nb(h)}`,"rules");setTimeout(()=>API.go("done"),1500)}catch(e){say("Wallet call failed: "+esc(e.message||e),"rules")}return}
-  if(!s.session||s.sessionFor!==s.vault){put({rules:{tx,day,list}});return authorize("rules")}
-  try{const hs=[];say("Saving rules on-chain (one tx each)…","rules");
+  if($g("setup-save-rules")?.disabled)return;
+  spinOn("rules",true,"Saving rules…");
+  if(isSel()){try{say("Approve the transaction in your wallet… this waits on-chain.","rules",true);const h=await selTx([["set_guard",{guard_pk:s.guard_pub}],["set_policy",{per_tx_cap:yo(tx),daily_cap:yo(day)}],...list.map(r=>["allow",{receiver:r}])]);
+   say(`Rules saved: ${tx} NEAR/transfer · ${day} NEAR/day · ${list.length} receiver(s) ${nb(h)}`,"rules");setTimeout(()=>API.go("done"),800)}catch(e){say("Wallet call failed: "+esc(e.message||e),"rules")}return}
+  if(!s.session||s.sessionFor!==s.vault){put({rules:{tx,day,list}});spinOn("rules",true,"Opening wallet…");say("Approve Stashway in your wallet…","rules",true);return authorize("rules")}
+  try{const hs=[];say("Saving rules on-chain… each step waits for confirmation.","rules",true);
    hs.push(await fc("set_guard",{guard_pk:s.guard_pub}));hs.push(await fc("set_policy",{per_tx_cap:yo(tx),daily_cap:yo(day)}));
    for(const r of list)hs.push(await fc("allow",{receiver:r}));
-   say(`Rules saved: ${tx} NEAR/transfer · ${day} NEAR/day · ${list.length} receiver(s) ${hs.map(nb).join(" ")}`,"rules");setTimeout(()=>API.go("done"),1500)}catch(e){say("Wallet call failed: "+esc(e.message),"rules")}}
+   say(`Rules saved: ${tx} NEAR/transfer · ${day} NEAR/day · ${list.length} receiver(s) ${hs.map(nb).join(" ")}`,"rules");setTimeout(()=>API.go("done"),800)}catch(e){say("Wallet call failed: "+esc(e.message),"rules")}}
 });
 // Resume after wallet redirect. Wallets may append account_id to the query or after #setup.
 const q=new URLSearchParams(location.search),h=new URLSearchParams(location.hash.replace(/^#[^&?]*/,"").replace(/^[?&]/,""));
