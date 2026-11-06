@@ -235,7 +235,7 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 .su-note{font-size:13px;color:var(--muted,#a1a1a1);margin-top:10px;min-height:1em}
 .su-acct{display:none;border:1px solid var(--border,#262626);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-family:ui-monospace,monospace;font-size:13px}
 #setup-step-connect[data-connected="1"] .su-acct{display:block}
-#setup-step-connect[data-connected="1"] #setup-connect,#setup-step-connect[data-connected="1"] #setup-wallets{display:none}
+#setup-step-connect[data-connected="1"] #setup-connect{display:none}
 #setup-continue-1{display:none}#setup-step-connect[data-connected="1"] #setup-continue-1{display:inline-flex}
 .su-f{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}.su-f label{font-size:12px;color:var(--muted,#a1a1a1)}
 .su-f input,.su-f textarea{background:transparent;color:inherit;border:1px solid var(--border,#262626);border-radius:10px;padding:10px 12px;font:inherit;font-size:14px}
@@ -243,6 +243,37 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 .su-links a{display:flex;justify-content:space-between;border:1px solid var(--border,#262626);border-radius:10px;padding:14px 16px;margin-bottom:8px;text-decoration:none;color:inherit;min-height:44px;box-sizing:border-box}
 .su-mob{display:none}
 @media(max-width:760px){.su-eb{display:none}.su{grid-template-columns:1fr}.su-rail{display:none}.su-mob{display:block;font-size:13px;color:var(--muted,#a1a1a1);margin-bottom:10px}.su-card{padding:20px;max-width:none}.su-card .btn{width:100%;min-height:44px;justify-content:center}.su-f input,.su-f textarea,.su-ld{font-size:16px}.su-row{flex-direction:column}}
+/* Connect wallet modal — NairaGuard layout, Stashway Mixpanel palette */
+.cw-back{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.72);display:flex;align-items:flex-end;justify-content:center;padding:0}
+.cw-back[hidden]{display:none!important}
+.cw-sheet{width:100%;max-width:420px;background:#0c0c0c;border:1px solid #262626;border-bottom:0;border-radius:16px 16px 0 0;padding:18px 18px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -16px 48px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:12px;max-height:90dvh;overflow:auto;color:var(--text,#fff)}
+.cw-grab{width:36px;height:4px;border-radius:99px;background:#333;margin:-2px auto 2px}
+.cw-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cw-title{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
+.cw-x{width:36px;height:36px;border-radius:50%;border:1px solid #262626;background:#141414;color:var(--text-2,#a1a1a1);font-size:14px;cursor:pointer;line-height:1}
+.cw-x:hover{background:#1a1a1a;color:#fff}
+.cw-sub{margin:0;font-size:13px;line-height:1.5;color:var(--text-2,#a1a1a1)}
+.cw-list{display:flex;flex-direction:column;gap:8px}
+.cw-opt{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 14px;border-radius:10px;border:1px solid #262626;background:#111;color:inherit;font:inherit;font-weight:600;font-size:14px;text-align:left;cursor:pointer}
+.cw-opt:hover:not(:disabled){background:#161616;border-color:#3DDC97}
+.cw-opt:disabled{opacity:.55;cursor:not-allowed}
+.cw-opt.busy{border-color:#3DDC97}
+.cw-ic{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;flex:none;font-weight:700;font-size:13px;color:#000}
+.cw-meteor{background:linear-gradient(135deg,#ff6b2c,#ffb347)}
+.cw-mnw{background:#fff;color:#000;font-size:11px;letter-spacing:-.02em}
+.cw-here{background:linear-gradient(135deg,#7c5cff,#b39aff);color:#fff}
+.cw-meta{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.cw-meta small{font-weight:400;font-size:12px;color:var(--text-3,#8b939e)}
+.cw-chev{color:#555;font-size:18px}
+.cw-err{margin:0;font-size:13px;color:#ffd9d5;background:rgba(228,88,88,.16);border:1px solid rgba(228,88,88,.35);border-radius:10px;padding:10px 12px}
+.cw-err[hidden]{display:none!important}
+.cw-note{margin:0;font-size:12px;color:var(--text-3,#8b939e);text-align:center;line-height:1.45}
+.cw-note b{color:var(--text-2,#a1a1a1);font-weight:600}
+@media(min-width:760px){
+  .cw-back{align-items:center;padding:24px}
+  .cw-sheet{border-radius:14px;border-bottom:1px solid #262626;padding:22px;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+  .cw-grab{display:none}
+}
 </style>
 <!-- SETUP WIZARD (Circa). DevOps hooks — define handlers on window.StashwaySetup:
   onConnect()     bound to #setup-connect      (NEAR wallet-selector) → then call setAccount(owner)
@@ -263,8 +294,21 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 <div class="su-card"><div class="su-mob" id="setup-mob">Step 1 of 5</div>
 <section class="su-step" id="setup-step-connect" data-connected="0"><div class="su-eb">Step 1 of 5</div><div class="su-t">Connect your NEAR testnet wallet</div><p class="su-ld">You’ll own the vault. The agent only gets a limited key.</p>
 <div class="su-acct">Connected · <span id="setup-account">—</span></div>
-<div class="su-row"><span id="setup-wallets" style="display:inline-flex;gap:6px;flex-wrap:wrap"><button class="btn primary" data-w="meteor-wallet">Meteor Wallet</button><button class="btn" data-w="mnw">MyNearWallet</button><button class="btn" data-w="here-wallet">HERE Wallet</button></span><div style="font-size:12px;color:var(--muted,#a1a1a1);margin-top:6px;width:100%">Web wallets open in a pop-up — allow pop-ups for this site. Set your wallet to testnet. On mobile, use a desktop browser or MyNearWallet if Meteor won’t open.</div><button class="btn primary" id="setup-connect" style="display:none">Connect wallet</button><button class="btn primary" id="setup-continue-1">Continue</button></div>
+<div class="su-row"><button class="btn primary" id="setup-connect" type="button">Connect wallet</button><button class="btn primary" id="setup-continue-1" type="button">Continue</button></div>
 <div class="su-note" id="setup-connect-note"></div><div class="su-ft">Testnet only · no mainnet funds</div></section>
+<div id="cw-back" class="cw-back" hidden role="dialog" aria-modal="true" aria-label="Connect wallet">
+<div class="cw-sheet" id="cw-sheet">
+<div class="cw-grab" aria-hidden="true"></div>
+<div class="cw-head"><h2 class="cw-title">Connect wallet</h2><button type="button" class="cw-x" id="cw-close" aria-label="Close">✕</button></div>
+<p class="cw-sub">Pick a NEAR testnet wallet. You’ll own the vault — the agent only gets a limited key.</p>
+<div class="cw-list" id="cw-list">
+<button type="button" class="cw-opt" data-w="meteor-wallet" disabled><span class="cw-ic cw-meteor">M</span><span class="cw-meta">Meteor Wallet<small data-hint>Loading…</small></span><span class="cw-chev">›</span></button>
+<button type="button" class="cw-opt" data-w="mnw"><span class="cw-ic cw-mnw">NEAR</span><span class="cw-meta">MyNearWallet<small data-hint>Redirect · always works</small></span><span class="cw-chev">›</span></button>
+<button type="button" class="cw-opt" data-w="here-wallet" disabled><span class="cw-ic cw-here">H</span><span class="cw-meta">HERE Wallet<small data-hint>Loading…</small></span><span class="cw-chev">›</span></button>
+</div>
+<p class="cw-err" id="cw-err" hidden role="alert"></p>
+<p class="cw-note">Allow pop-ups for this site. Set your wallet to <b>testnet</b>. On phone, MyNearWallet is the most reliable.</p>
+</div></div>
 <section class="su-step" id="setup-step-create"><div class="su-eb">Step 2 of 5</div><div class="su-t">Create your vault</div><p class="su-ld">Deploys the on-chain leash contract. Caps and allowlist start empty until you set them.</p>
 <div class="su-row"><button class="btn primary" id="setup-create">Create vault</button></div><div class="su-note" id="setup-create-status"></div><div class="su-ft">Vault: <span id="setup-vault" class="mono">not created yet</span></div></section>
 <section class="su-step" id="setup-step-agent"><div class="su-eb">Step 3 of 5</div><div class="su-t">Add your agent’s key</div><p class="su-ld">Download a function-call key that can only call agent_transfer — not full access.</p>
@@ -382,7 +426,7 @@ var API=window.StashwaySetup=Object.assign(window.StashwaySetup||{},{go:go,setSt
 setAccount:function(o){g("setup-account").textContent=o;g("setup-step-connect").dataset.connected=o?"1":"0";setStatus("","connect")},
 setVault:function(v){g("setup-vault").textContent=v;done.create=1}});
 function bind(id,h){g(id).addEventListener("click",function(){if(typeof API[h]==="function")return API[h]();setStatus(PREVIEW[h][1],PREVIEW[h][0])})}
-bind("setup-connect","onConnect");bind("setup-create","onCreate");bind("setup-download-key","onDownloadKey");bind("setup-confirm-key","onConfirmKey");bind("setup-save-rules","onSaveRules");
+bind("setup-create","onCreate");bind("setup-download-key","onDownloadKey");bind("setup-confirm-key","onConfirmKey");bind("setup-save-rules","onSaveRules");
 g("setup-continue-1").addEventListener("click",function(){go("create")});
 // Rail: any step clickable while in UI preview (banner present) for layout QA; once wired, only completed/current steps.
 g("setup-rail").addEventListener("click",function(e){var b=e.target.closest("[data-su]");if(!b)return;var s=b.dataset.su;if(g("setup-banner")||done[s]||S.indexOf(s)<=S.indexOf(cur))go(s)});
@@ -395,16 +439,53 @@ let N,SEL;const near=async()=>N||(N=await import("https://esm.sh/near-api-js@4.0
 const yo=n=>{const[i,f=""]=String(n).trim().split(".");return BigInt(i+(f+"0".repeat(24)).slice(0,24)).toString()};
 const sel=async()=>SEL||(SEL=(async()=>{const[c,m,h]=await Promise.all(["core","meteor-wallet","here-wallet"].map(x=>import("https://esm.sh/@near-wallet-selector/"+x+"@8.10.2?bundle")));
  return c.setupWalletSelector({network:{networkId:"testnet",nodeUrl:"https://test.rpc.fastnear.com",helperUrl:"https://helper.testnet.near.org",explorerUrl:"https://testnet.nearblocks.io",indexerUrl:"https://testnet-api.kitwallet.app"},modules:[m.setupMeteorWallet(),h.setupHereWallet()]})})());
-let SELR=null,WL={};sel().then(async x=>{SELR=x;for(const id of["meteor-wallet","here-wallet"])try{WL[id]=await x.wallet(id)}catch(e){console.warn("wallet preload",id,e)}}).catch(e=>console.error("wallet-selector load failed",e));
+let SELR=null,WL={},selReady=false,selErr=null;
 const isSel=()=>{const w=st().wallet;return w==="meteor-wallet"||w==="here-wallet"};
 const selTx=async acts=>{const w=await (await sel()).wallet(st().wallet);const r=await w.signAndSendTransaction({signerId:st().owner,receiverId:st().vault,actions:acts.map(([m,a])=>({type:"FunctionCall",params:{methodName:m,args:a,gas:"30000000000000",deposit:"0"}}))});return r?.transaction?.hash||r?.transaction_outcome?.id||""};
-async function pick(id){put({wallet:id});if(id==="mnw")return API.onConnect();say("Opening "+(id==="meteor-wallet"?"Meteor":"HERE")+" wallet… (allow pop-ups)","connect");
- try{const w=WL[id]||await (await sel()).wallet(id);const a=await TO(w.signIn({contractId:"guest-book.testnet",methodNames:[]}),120000,"no response from wallet — check pop-up blocker / Meteor extension is on testnet");const acc=(a&&a[0]&&a[0].accountId)||((await w.getAccounts())[0]||{}).accountId;
-  if(!acc)throw Error("no account returned");put({owner:acc});API.setAccount(acc);say("Connected <b>"+acc+"</b> via "+id.replace("-"," "),"connect");setTimeout(()=>API.go(st().vault?"agent":"create"),800)}catch(e){say("Wallet connect failed: "+esc(e.message||e),"connect")}}
 const TO=(p,ms,m)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(Error(m)),ms))]);
-document.querySelectorAll("#setup-wallets [data-w]").forEach(b=>{if(b.dataset.w!=="mnw"){b.disabled=true;b.dataset.l=b.textContent;b.textContent+=" (loading…)"}b.onclick=()=>pick(b.dataset.w)});
-const rdy=()=>document.querySelectorAll("#setup-wallets [data-w]").forEach(b=>{if(b.dataset.l){b.disabled=false;b.textContent=b.dataset.l}});
-TO(sel(),15000,"wallet loader timed out").then(async x=>{for(const id of["meteor-wallet","here-wallet"])try{WL[id]=WL[id]||await TO(x.wallet(id),10000,id+" timed out")}catch(e){}rdy()}).catch(e=>{rdy();say("Wallet loader failed: "+esc(e.message||e)+" — use MyNearWallet or reload.","connect")});
+const mobile=/android|iphone|ipad|ipod/i.test(navigator.userAgent||"");
+const $cw=i=>document.getElementById(i);
+const cwErr=(m)=>{const e=$cw("cw-err");if(!e)return;if(!m){e.hidden=true;e.textContent="";return}e.hidden=false;e.textContent=m};
+const cwBusy=(id)=>{document.querySelectorAll("#cw-list .cw-opt").forEach(b=>{b.classList.toggle("busy",!!id&&b.dataset.w===id);const h=b.querySelector("[data-hint]");if(!h||!h.dataset.base)return;h.textContent=(id&&b.dataset.w===id)?"Check your wallet…":h.dataset.base})};
+const cwHint=(id,t)=>{const b=document.querySelector('#cw-list [data-w="'+id+'"]');if(!b)return;const h=b.querySelector("[data-hint]");if(!h)return;h.dataset.base=t;h.textContent=t};
+const openCw=()=>{const b=$cw("cw-back");if(!b)return;b.hidden=false;cwErr(selErr);document.body.style.overflow="hidden"};
+const closeCw=()=>{const b=$cw("cw-back");if(!b)return;b.hidden=true;cwBusy(null);document.body.style.overflow=""};
+$g("setup-connect").addEventListener("click",e=>{e.preventDefault();openCw()});
+$cw("cw-close").addEventListener("click",closeCw);
+$cw("cw-back").addEventListener("click",e=>{if(e.target===$cw("cw-back"))closeCw()});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$cw("cw-back").hidden)closeCw()});
+document.querySelectorAll("#cw-list .cw-opt").forEach(b=>{const h=b.querySelector("[data-hint]");if(h)h.dataset.base=h.textContent});
+function finishConnect(acc,id){put({owner:acc,wallet:id});API.setAccount(acc);cwBusy(null);closeCw();say("Connected <b>"+esc(acc)+"</b>","connect");setTimeout(()=>API.go(st().vault?"agent":"create"),600)}
+function pick(id){
+  // CRITICAL: Meteor opens via window.open inside signIn. Any await (or long work) before signIn loses the click gesture and the pop-up is blocked.
+  if(id==="mnw"){put({wallet:id});cwErr(null);cwBusy("mnw");return API.onConnect()}
+  const w=WL[id];
+  if(!w){cwErr((id==="meteor-wallet"?"Meteor":"HERE")+" is still loading. Wait for the row to enable, or use MyNearWallet.");return}
+  let signPromise;
+  try{signPromise=w.signIn({contractId:"guest-book.testnet",methodNames:[]})}
+  catch(e){cwErr(String(e.message||e));return}
+  put({wallet:id});cwErr(null);cwBusy(id);
+  TO(signPromise,120000,"No response from wallet — allow pop-ups for this site, set the wallet to testnet, or use MyNearWallet.")
+    .then(async a=>{const acc=(a&&a[0]&&a[0].accountId)||((await w.getAccounts())[0]||{}).accountId;if(!acc)throw Error("No account returned");finishConnect(acc,id)})
+    .catch(e=>{cwBusy(null);const msg=String(e&&e.message||e);const blocked=/popup|POPUP|blocked|Couldn't open/i.test(msg);
+      cwErr(blocked?("Pop-up blocked or failed. Allow pop-ups for stashway-arena.vercel.app, then try again — or pick MyNearWallet."):(msg+" — try MyNearWallet."));
+      say("Wallet connect failed: "+esc(msg),"connect")})}
+document.querySelectorAll("#cw-list [data-w]").forEach(b=>b.addEventListener("click",()=>{if(b.disabled)return;pick(b.dataset.w)}));
+function markReady(){
+  selReady=true;
+  const meteorExt=!!window.meteorCom;
+  [["meteor-wallet", meteorExt?"Detected in this browser":(mobile?"Pop-up · desktop works best":"Extension or pop-up · testnet")],
+   ["here-wallet", mobile?"Pop-up · desktop works best":"Extension or pop-up · testnet"]].forEach(([id,hint])=>{
+    const b=document.querySelector('#cw-list [data-w="'+id+'"]');if(!b)return;b.disabled=!WL[id];cwHint(id,WL[id]?hint:(selErr||"Unavailable — use MyNearWallet"))});
+  if(mobile)cwHint("mnw","Recommended on phone · redirect");
+}
+TO(sel(),20000,"wallet loader timed out").then(async x=>{SELR=x;
+  for(const id of["meteor-wallet","here-wallet"]){try{WL[id]=await TO(x.wallet(id),12000,id+" init timed out")}catch(e){console.warn("wallet init",id,e);selErr=(e&&e.message)||String(e)}}
+  markReady()}).catch(e=>{selErr=String(e.message||e);cwHint("meteor-wallet","Unavailable");cwHint("here-wallet","Unavailable");
+  const bm=document.querySelector('#cw-list [data-w="meteor-wallet"]'),bh=document.querySelector('#cw-list [data-w="here-wallet"]');
+  if(bm)bm.disabled=true;if(bh)bh.disabled=true;
+  say("Wallet loader failed: "+esc(selErr)+" — use MyNearWallet.","connect")});
+
 const back=s=>location.origin+"/?step="+s+"#setup";
 $g("setup-banner")?.remove();
 async function owner(){const s=st(),n=await near(),ks=new n.keyStores.InMemoryKeyStore();await ks.setKey("testnet",s.owner,n.KeyPair.fromString(s.session));
