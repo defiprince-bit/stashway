@@ -7,12 +7,12 @@ function build(wallet,args){
  const code=html.match(/function walletLoginUrl\([\s\S]*?\n}/)[0];
  return vm.runInNewContext(`${code};walletLoginUrl(args)`,{URL,args,st:()=>({wallet}),walletLoginBase:()=>wallet==='mnw'?'https://testnet.mynearwallet.com':'https://wallet.meteorwallet.app/connect/testnet'});
 }
-const args={contractId:'guest-book.testnet',publicKey:'ed25519:11111111111111111111111111111111',successUrl:'https://stashway-arena.vercel.app/?step=create#setup',failureUrl:'https://stashway-arena.vercel.app/?step=connect#setup'};
+const args={contractId:'guest-book.testnet',publicKey:'ed25519:11111111111111111111111111111111',successUrl:'https://stashway-arena.vercel.app/?step=create',failureUrl:'https://stashway-arena.vercel.app/?step=connect'};
 test('Meteor receives a typed login request with key and contract; callbacks survive URL parsing',()=>{
  const value=build('meteor',args),url=new URL(value);
  assert.equal(url.origin,'https://wallet.meteorwallet.app');
  assert.equal(url.pathname,'/connect/testnet/login/');
- assert.equal(url.hash,'');assert.ok(value.includes('%23setup'));assert.ok(!value.includes('#'));
+ assert.equal(url.hash,'');assert.ok(value.includes('step%3Dcreate'));assert.ok(!value.includes('#'));assert.ok(!html.includes('"/?step="+s+"#setup"'));assert.ok(html.includes('encodeURIComponent(s)'));
  assert.deepEqual(Object.fromEntries(url.searchParams),{contract_id:args.contractId,public_key:args.publicKey,success_url:args.successUrl,failure_url:args.failureUrl,type:'ALL_METHODS'});
 });
 test('vault authorization uses the same typed Meteor URL',()=>{

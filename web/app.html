@@ -499,7 +499,7 @@ TO(sel(),20000,"wallet loader timed out").then(async x=>{SELR=x;
   if(bh)bh.disabled=true;
   console.warn("HERE wallet loader failed",selErr)});
 
-const back=s=>location.origin+"/?step="+s+"#setup";
+const back=s=>location.origin+"/?step="+encodeURIComponent(s);
 $g("setup-banner")?.remove();
 async function owner(){const s=st(),n=await near(),ks=new n.keyStores.InMemoryKeyStore();await ks.setKey("testnet",s.owner,n.KeyPair.fromString(s.session));
  return (await n.connect({networkId:"testnet",nodeUrl:"https://test.rpc.fastnear.com",keyStore:ks})).account(s.owner)}
@@ -520,9 +520,14 @@ Object.assign(API,{
   }catch(e){cwBusy(null);const message="Couldn’t open wallet: "+esc(e.message||e);cwErr(message);say(message,"connect")}
  },
  async onCreate(){const o=st().owner;if(!o)return API.go("connect");say("Creating your vault on testnet… (~15s)","create");
-  const r=await fetch("/api/provision",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({owner:o})}),j=await r.json();
-  if(!r.ok)return say("Couldn’t create: "+(j.error||r.status),"create");put({vault:j.vault,guard_pub:j.guard_pub,agent:null,session:null});API.setVault(j.vault);
-  say(`Vault <b>${j.vault}</b> is live · <a href="${j.explorer}" target="_blank">nearblocks ↗</a>`,"create");setTimeout(()=>API.go("agent"),1200)},
+  try{const r=await fetch("/api/provision",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({owner:o})}),text=await r.text();
+   let j={};try{j=JSON.parse(text)}catch{j={error:(text||"").slice(0,200)||String(r.status)}}
+   if(!r.ok){if(j.vault){put({vault:j.vault,guard_pub:j.guard_pub||st().guard_pub,agent:null,session:null});API.setVault(j.vault);
+     say(`Vault <b>${j.vault}</b> was created — continue to add your agent. `+(j.error?`<span class="live">${esc(j.error)}</span>`:""),"create");return setTimeout(()=>API.go("agent"),1200)}
+    return say("Couldn’t create: "+(j.error||r.status),"create")}
+   put({vault:j.vault,guard_pub:j.guard_pub,agent:null,session:null});API.setVault(j.vault);
+   say(`Vault <b>${j.vault}</b> is live · <a href="${j.explorer}" target="_blank">nearblocks ↗</a>`,"create");setTimeout(()=>API.go("agent"),1200)}
+  catch(e){say("Couldn’t create: "+esc(e.message||e),"create")}},
  async onDownloadKey(){const s=st();if(!s.vault)return API.go("create");const n=await near(),k=n.KeyPair.fromRandom("ed25519");
   const pk=k.getPublicKey().toString();put({agent_pk:pk});
   const b=new Blob([JSON.stringify({account_id:s.vault,public_key:pk,private_key:k.toString(),network:"testnet",can_call:["agent_transfer"]},null,1)],{type:"application/json"});
@@ -542,8 +547,9 @@ Object.assign(API,{
    for(const r of list)hs.push(await fc("allow",{receiver:r}));
    say(`Rules saved: ${tx} NEAR/transfer · ${day} NEAR/day · ${list.length} receiver(s) ${hs.map(nb).join(" ")}`,"rules");setTimeout(()=>API.go("done"),1500)}catch(e){say("Wallet call failed: "+esc(e.message),"rules")}}
 });
-// Resume after wallet redirect
-const q=new URLSearchParams(location.search),acct=q.get("account_id");
+// Resume after wallet redirect. Wallets may append account_id to the query or after #setup.
+const q=new URLSearchParams(location.search),h=new URLSearchParams(location.hash.replace(/^#[^&?]*/,"").replace(/^[?&]/,""));
+const acct=q.get("account_id")||h.get("account_id");
 if(acct){put({owner:acct,wallet:st().wallet||"meteor"});history.replaceState(null,"","/#setup")}
 const s=st();if(s.owner)API.setAccount(s.owner);if(s.vault)API.setVault(s.vault);
 if(acct&&s.resume==="agent"){put({resume:null});API.go("agent");API.onConfirmKey()}

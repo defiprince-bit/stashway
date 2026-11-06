@@ -2,7 +2,7 @@
 <html lang="en">
 <head><link rel="icon" type="image/png" href="/assets/mark-mint.png"/><link rel="shortcut icon" href="/favicon.ico"/>
 <script>(function(){var A=["start","setup","vault","guard","try","arena","panic","policy","events"],on=0;
-function want(){return A.indexOf(location.hash.slice(1))>=0}
+function want(){var h=location.hash.slice(1).split("&")[0].split("?")[0];if(A.indexOf(h)>=0)return true;var q=new URLSearchParams(location.search);return q.has("step")||q.has("account_id")}
 function go(){if(on||!want())return;on=1;if(document.documentElement)document.documentElement.style.visibility="hidden";
 fetch("/app.html",{cache:"no-cache"}).then(function(r){return r.text()}).then(function(h){document.open();document.write(h);document.close();scrollTo(0,0)});}
 go();addEventListener("hashchange",go);})();</script>
