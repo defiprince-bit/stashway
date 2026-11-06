@@ -235,7 +235,7 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 .su-note{font-size:13px;color:var(--muted,#a1a1a1);margin-top:10px;min-height:1em}
 .su-acct{display:none;border:1px solid var(--border,#262626);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-family:ui-monospace,monospace;font-size:13px}
 #setup-step-connect[data-connected="1"] .su-acct{display:block}
-#setup-step-connect[data-connected="1"] #setup-connect{display:none}
+#setup-step-connect[data-connected="1"] #setup-connect,#setup-step-connect[data-connected="1"] #setup-other-wallets{display:none}
 #setup-continue-1{display:none}#setup-step-connect[data-connected="1"] #setup-continue-1{display:inline-flex}
 .su-f{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}.su-f label{font-size:12px;color:var(--muted,#a1a1a1)}
 .su-f input,.su-f textarea{background:transparent;color:inherit;border:1px solid var(--border,#262626);border-radius:10px;padding:10px 12px;font:inherit;font-size:14px}
@@ -292,22 +292,23 @@ details{border-bottom:1px solid var(--border)}details:last-child{border-bottom:n
 <li><button data-su="rules"><i>4</i>Set rules</button></li>
 <li><button data-su="done"><i>5</i>Done</button></li></ol>
 <div class="su-card"><div class="su-mob" id="setup-mob">Step 1 of 5</div>
-<section class="su-step" id="setup-step-connect" data-connected="0"><div class="su-eb">Step 1 of 5</div><div class="su-t">Connect your NEAR testnet wallet</div><p class="su-ld">You’ll own the vault. The agent only gets a limited key.</p>
+<section class="su-step" id="setup-step-connect" data-connected="0"><div class="su-eb">Step 1 of 5</div><div class="su-t">Connect your NEAR testnet wallet</div><p class="su-ld">You’ll own the vault. The agent only gets a limited key. We use <b>MyNearWallet</b> (web, no extension).</p>
 <div class="su-acct">Connected · <span id="setup-account">—</span></div>
-<div class="su-row"><button class="btn primary" id="setup-connect" type="button">Connect wallet</button><button class="btn primary" id="setup-continue-1" type="button">Continue</button></div>
-<div class="su-note" id="setup-connect-note"></div><div class="su-ft">Testnet only · no mainnet funds</div></section>
+<div class="su-row"><button class="btn primary" id="setup-connect" type="button">Connect with MyNearWallet</button><button class="btn primary" id="setup-continue-1" type="button">Continue</button></div>
+<div class="su-row" style="margin-top:8px"><button class="btn" id="setup-other-wallets" type="button">Other wallets…</button></div>
+<div class="su-note" id="setup-connect-note"></div><div class="su-ft">Opens testnet.mynearwallet.com · create a free testnet account there if you need one</div></section>
 <div id="cw-back" class="cw-back" hidden role="dialog" aria-modal="true" aria-label="Connect wallet">
 <div class="cw-sheet" id="cw-sheet">
 <div class="cw-grab" aria-hidden="true"></div>
 <div class="cw-head"><h2 class="cw-title">Connect wallet</h2><button type="button" class="cw-x" id="cw-close" aria-label="Close">✕</button></div>
 <p class="cw-sub">Pick a NEAR testnet wallet. You’ll own the vault — the agent only gets a limited key.</p>
 <div class="cw-list" id="cw-list">
+<button type="button" class="cw-opt" data-w="mnw"><span class="cw-ic cw-mnw">NEAR</span><span class="cw-meta">MyNearWallet<small data-hint>Recommended · web redirect</small></span><span class="cw-chev">›</span></button>
 <button type="button" class="cw-opt" data-w="meteor-wallet" disabled><span class="cw-ic cw-meteor">M</span><span class="cw-meta">Meteor Wallet<small data-hint>Loading…</small></span><span class="cw-chev">›</span></button>
-<button type="button" class="cw-opt" data-w="mnw"><span class="cw-ic cw-mnw">NEAR</span><span class="cw-meta">MyNearWallet<small data-hint>Redirect · always works</small></span><span class="cw-chev">›</span></button>
 <button type="button" class="cw-opt" data-w="here-wallet" disabled><span class="cw-ic cw-here">H</span><span class="cw-meta">HERE Wallet<small data-hint>Loading…</small></span><span class="cw-chev">›</span></button>
 </div>
 <p class="cw-err" id="cw-err" hidden role="alert"></p>
-<p class="cw-note">Allow pop-ups for this site. Set your wallet to <b>testnet</b>. On phone, MyNearWallet is the most reliable.</p>
+<p class="cw-note">MyNearWallet opens in this tab (no extension). Meteor / HERE need a working extension or pop-ups and <b>testnet</b>.</p>
 </div></div>
 <section class="su-step" id="setup-step-create"><div class="su-eb">Step 2 of 5</div><div class="su-t">Create your vault</div><p class="su-ld">Deploys the on-chain leash contract. Caps and allowlist start empty until you set them.</p>
 <div class="su-row"><button class="btn primary" id="setup-create">Create vault</button></div><div class="su-note" id="setup-create-status"></div><div class="su-ft">Vault: <span id="setup-vault" class="mono">not created yet</span></div></section>
@@ -450,7 +451,8 @@ const cwBusy=(id)=>{document.querySelectorAll("#cw-list .cw-opt").forEach(b=>{b.
 const cwHint=(id,t)=>{const b=document.querySelector('#cw-list [data-w="'+id+'"]');if(!b)return;const h=b.querySelector("[data-hint]");if(!h)return;h.dataset.base=t;h.textContent=t};
 const openCw=()=>{const b=$cw("cw-back");if(!b)return;b.hidden=false;cwErr(selErr);document.body.style.overflow="hidden"};
 const closeCw=()=>{const b=$cw("cw-back");if(!b)return;b.hidden=true;cwBusy(null);document.body.style.overflow=""};
-$g("setup-connect").addEventListener("click",e=>{e.preventDefault();openCw()});
+$g("setup-connect").addEventListener("click",e=>{e.preventDefault();put({wallet:"mnw"});say("Opening MyNearWallet (testnet)…","connect");API.onConnect()});
+$g("setup-other-wallets").addEventListener("click",e=>{e.preventDefault();openCw()});
 $cw("cw-close").addEventListener("click",closeCw);
 $cw("cw-back").addEventListener("click",e=>{if(e.target===$cw("cw-back"))closeCw()});
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!$cw("cw-back").hidden)closeCw()});
@@ -477,8 +479,9 @@ function markReady(){
   [["meteor-wallet", meteorExt?"Detected in this browser":(mobile?"Pop-up · desktop works best":"Extension or pop-up · testnet")],
    ["here-wallet", mobile?"Pop-up · desktop works best":"Extension or pop-up · testnet"]].forEach(([id,hint])=>{
     const b=document.querySelector('#cw-list [data-w="'+id+'"]');if(!b)return;b.disabled=!WL[id];cwHint(id,WL[id]?hint:(selErr||"Unavailable — use MyNearWallet"))});
-  if(mobile)cwHint("mnw","Recommended on phone · redirect");
+  cwHint("mnw","Recommended · web redirect · no extension");
 }
+
 TO(sel(),20000,"wallet loader timed out").then(async x=>{SELR=x;
   for(const id of["meteor-wallet","here-wallet"]){try{WL[id]=await TO(x.wallet(id),12000,id+" init timed out")}catch(e){console.warn("wallet init",id,e);selErr=(e&&e.message)||String(e)}}
   markReady()}).catch(e=>{selErr=String(e.message||e);cwHint("meteor-wallet","Unavailable");cwHint("here-wallet","Unavailable");
