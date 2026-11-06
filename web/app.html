@@ -436,6 +436,14 @@ var q=new URLSearchParams(location.search).get("step");go(S.indexOf(q)>=0?q:"con
 // Setup wiring: Meteor Wallet web (testnet) login → /api/provision → agent FC key → owner signs set_agent / set_guard / set_policy / allow.
 // Official Meteor web base from @meteorwallet/sdk resolveWalletUrl("testnet") → https://wallet.meteorwallet.app/connect/testnet
 const W_METEOR="https://wallet.meteorwallet.app/connect/testnet",W_MNW="https://testnet.mynearwallet.com",SK="stashway-setup-v1",API=window.StashwaySetup,$g=i=>document.getElementById(i);
+// Meteor's login action is typed; a NEAR-style callback-only URL is not a login request.
+function walletLoginUrl({contractId,publicKey,successUrl,failureUrl}){
+ const url=new URL(walletLoginBase()+"/login/");
+ const params={contract_id:contractId,public_key:publicKey,success_url:successUrl,failure_url:failureUrl};
+ if(st().wallet!=="mnw")params.type="ALL_METHODS";
+ for(const [key,value] of Object.entries(params))url.searchParams.set(key,String(value));
+ return url.href;
+}
 const walletLoginBase=()=>st().wallet==="mnw"?W_MNW:W_METEOR;
 const st=()=>{try{return JSON.parse(localStorage.getItem(SK))||{}}catch{return{}}},put=o=>localStorage.setItem(SK,JSON.stringify({...st(),...o}));
 let N,SEL;const near=async()=>N||(N=await import("https://esm.sh/near-api-js@4.0.4"));
@@ -497,11 +505,20 @@ async function owner(){const s=st(),n=await near(),ks=new n.keyStores.InMemoryKe
  return (await n.connect({networkId:"testnet",nodeUrl:"https://test.rpc.fastnear.com",keyStore:ks})).account(s.owner)}
 const fc=async(m,a)=>{const r=await (await owner()).functionCall({contractId:st().vault,methodName:m,args:a,gas:30000000000000n,attachedDeposit:0n});return r.transaction.hash};
 async function authorize(step){const n=await near(),k=n.KeyPair.fromRandom("ed25519");put({session:k.toString(),sessionFor:st().vault,resume:step});
- location.href=`${walletLoginBase()}/login/?contract_id=${st().vault}&public_key=${k.getPublicKey()}&success_url=${encodeURIComponent(back(step))}&failure_url=${encodeURIComponent(back(step))}`}
+ location.href=walletLoginUrl({contractId:st().vault,publicKey:k.getPublicKey().toString(),successUrl:back(step),failureUrl:back(step)})}
 const nb=h=>`<a href="https://testnet.nearblocks.io/txns/${h}" target="_blank">tx ↗</a>`;
 const say=(m,s)=>{API.setStatus("",s);const e=$g({connect:"setup-connect-note",create:"setup-create-status",agent:"setup-agent-status",rules:"setup-rules-status"}[s]);if(e)e.innerHTML=m};
 Object.assign(API,{
- onConnect(){if(!st().wallet)put({wallet:"meteor"});location.href=`${walletLoginBase()}/login/?success_url=${encodeURIComponent(back("create"))}&failure_url=${encodeURIComponent(back("connect"))}`},
+ async onConnect(){
+  if(!st().wallet)put({wallet:"meteor"});
+  try{
+   // Key generation is local: do not await RPC before opening the wallet.
+   const n=await near(),key=n.KeyPair.fromRandom("ed25519");
+   // This initial limited key is separate from the vault session authorized later.
+   put({connectKey:key.toString()});
+   location.href=walletLoginUrl({contractId:st().vault||"guest-book.testnet",publicKey:key.getPublicKey().toString(),successUrl:back("create"),failureUrl:back("connect")});
+  }catch(e){cwBusy(null);const message="Couldn’t open wallet: "+esc(e.message||e);cwErr(message);say(message,"connect")}
+ },
  async onCreate(){const o=st().owner;if(!o)return API.go("connect");say("Creating your vault on testnet… (~15s)","create");
   const r=await fetch("/api/provision",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({owner:o})}),j=await r.json();
   if(!r.ok)return say("Couldn’t create: "+(j.error||r.status),"create");put({vault:j.vault,guard_pub:j.guard_pub,agent:null,session:null});API.setVault(j.vault);
