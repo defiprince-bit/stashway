@@ -417,7 +417,11 @@ window.closeWelcome=function(h){try{localStorage.setItem(K,"1")}catch(e){}W.clas
 W.addEventListener("click",function(e){var a=e.target.closest("[data-wgo]");if(a){e.preventDefault();closeWelcome(a.dataset.wgo)}else if(e.target===W)closeWelcome("setup")});
 addEventListener("keydown",function(e){if(e.key==="Escape"&&!W.classList.contains("hidden"))closeWelcome("setup")});
 document.querySelectorAll("[data-start]").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();openWelcome()})});
-var h=location.hash.slice(1);if(!seen()&&(h===""||h==="vault"))openWelcome();})();</script>
+var h=location.hash.slice(1).split("&")[0].split("?")[0];
+function inSetup(){try{var s=JSON.parse(localStorage.getItem("stashway-setup-v1")||"{}");if(s.owner||s.vault)return true}catch(e){}
+ var q=new URLSearchParams(location.search);return q.has("step")||q.has("account_id")||h==="setup"}
+if(inSetup()){try{localStorage.setItem(K,"1")}catch(e){}W.classList.add("hidden")}
+else if(!seen()&&(h===""||h==="vault"||h==="start"))openWelcome();})();</script>
 <script>(function(){var S=["connect","create","agent","rules","done"],cur="connect",done={};
 var g=function(i){return document.getElementById(i)},stat={create:"setup-create-status",agent:"setup-agent-status",rules:"setup-rules-status",connect:"setup-connect-note"};
 var PREVIEW={onConnect:["connect","Wallet module still loading — wait a moment and try again, or hard refresh."],onCreate:["create","Still loading — wait a moment and retry."],onDownloadKey:["agent","Still loading — wait a moment and retry."],onConfirmKey:["agent","Still loading — wait a moment and retry."],onSaveRules:["rules","Still loading — wait a moment and retry."]};
